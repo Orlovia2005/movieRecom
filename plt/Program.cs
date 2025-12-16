@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using plt.Models.Model; // твой DbContext
+using movieRecom.Models.Model; // твой DbContext
 
-namespace plt
+namespace movieRecom
 {
     public class Program
     {

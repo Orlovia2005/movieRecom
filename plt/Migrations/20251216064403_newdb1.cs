@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace plt.Migrations
+namespace movieRecom.Migrations
 {
     /// <inheritdoc />
-    public partial class dlvs2 : Migration
+    public partial class newdb1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

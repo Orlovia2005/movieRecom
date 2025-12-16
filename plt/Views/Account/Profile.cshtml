@@ -1,7 +1,4 @@
-﻿@section Scripts {
-<script src="~/js/Profile.js"></script>
-}
-@model plt.Models.ViewModel.ProfileViewModel
+﻿@model movieRecom.Models.ViewModel.ProfileViewModel
 @{
     ViewData["Title"] = "Профиль";
 }
@@ -10,12 +7,17 @@
     <!-- Левое меню -->
     <aside class="profile-sidebar">
         <ul>
-            <li class="active" data-tab="general">Общие данные</li>
-            <li data-tab="password">Смена пароля</li>
-            <form asp-action="Logout" asp-controller="Account" enctype="multipart/form-data">
-                <button type="submit" class="btn btn_logaut">Выйти</button>
+            <li class="active" data-tab="general">
+                <i class="fas fa-user-circle"></i> Общие данные
+            </li>
+            <li data-tab="password">
+                <i class="fas fa-key"></i> Смена пароля
+            </li>
+            <form asp-action="Logout" asp-controller="Account" enctype="multipart/form-data" class="logout-form">
+                <button type="submit" class="btn btn_logaut">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </button>
             </form>
-
         </ul>
     </aside>
 
@@ -23,78 +25,132 @@
     <section class="profile-content">
         <!-- Общие данные -->
         <div class="tab-content active" id="general">
-            <h2>Общие данные</h2>
+            <div class="profile-header">
+                <h2><i class="fas fa-user-edit"></i> Общие данные</h2>
+                <p class="profile-subtitle">Обновите информацию о вашем аккаунте</p>
+            </div>
 
-            <form asp-action="UpdateProfile" asp-controller="Account" method="post" enctype="multipart/form-data">
+            <form asp-action="UpdateProfile" asp-controller="Account" method="post" enctype="multipart/form-data" class="profile-form">
                 <!-- скрытый ID -->
                 <input type="hidden" asp-for="Id" />
 
                 <!-- Аватар -->
-                <div class="form-group">
+                <div class="form-group avatar-group">
                     <div class="avatar-wrapper">
                         @if (!string.IsNullOrEmpty(Model.AvatarUrl))
                         {
-                            <img src="@Model.AvatarUrl" alt="Аватар" class="avatar-preview" id="avatarPreview" />
+                            <img src="@Model.AvatarUrl" alt="Аватар" class="avatar-previewProfile" id="avatarPreview" />
                         }
                         else
                         {
-                            <img src="~/Images/BaseAvatar.jpg" alt="Аватар" class="avatar-preview" id="avatarPreview" />
+                            <img src="~/Images/BaseAvatar.jpg" alt="Аватар" class="avatar-previewProfile" id="avatarPreview" />
                         }
+                        <div class="avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
                     </div>
 
                     <!-- input для выбора файла -->
-                    <input type="file" id="avatarInput" name="avatar" accept="image/*" hidden />
-                    <button type="button" class="btn btn-accent" id="chooseAvatarBtn">Выбрать файл</button>
-                    <span id="fileName" class="file-name">Файл не выбран</span>
+                    <div class="avatar-controls">
+                        <input type="file" id="avatarInput" name="avatar" accept="image/*" hidden />
+                        <button type="button" class="btn btn-avatar" id="chooseAvatarBtn">
+                            <i class="fas fa-cloud-upload-alt"></i> Выбрать файл
+                        </button>
+                        <span id="fileName" class="file-name">Файл не выбран</span>
+                    </div>
                 </div>
 
-                <!-- Имя -->
-                <div class="form-group">
-                    <label asp-for="FirstName">Имя</label>
-                    <input type="text" class="form-control" asp-for="FirstName" />
+                <div class="form-grid">
+                    <!-- Имя -->
+                    <div class="form-group">
+                        <label asp-for="FirstName">
+                            <i class="fas fa-user-tag"></i> Имя
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" asp-for="FirstName" placeholder="Введите ваше имя" />
+                        </div>
+                    </div>
+
+                    <!-- Фамилия -->
+                    <div class="form-group">
+                        <label asp-for="SecondName">
+                            <i class="fas fa-users"></i> Фамилия
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" asp-for="SecondName" placeholder="Введите вашу фамилию" />
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label asp-for="Email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-at input-icon"></i>
+                            <input type="email" class="form-control" asp-for="Email" placeholder="Введите ваш email" />
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Фамилия -->
-                <div class="form-group">
-                    <label asp-for="SecondName">Фамилия</label>
-                    <input type="text" class="form-control" asp-for="SecondName" />
-                </div>
-
-                <!-- Email -->
-                <div class="form-group">
-                    <label asp-for="Email">Email</label>
-                    <input type="email" class="form-control" asp-for="Email" />
-                </div>
-
-                <button type="submit" class="btn btn-accent">Сохранить</button>
+                <button type="submit" class="btn btn-accent btn-save">
+                    <i class="fas fa-save"></i> Сохранить изменения
+                </button>
             </form>
-            
         </div>
 
         <!-- Пароль -->
         <div class="tab-content" id="password">
-            <h2>Смена пароля</h2>
+            <div class="profile-header">
+                <h2><i class="fas fa-lock"></i> Смена пароля</h2>
+                <p class="profile-subtitle">Обновите пароль для защиты вашего аккаунта</p>
+            </div>
 
-            <form asp-action="UpdatePassword" asp-controller="Account" method="post">
+            <form asp-action="UpdatePassword" asp-controller="Account" method="post" class="profile-form">
                 <input type="hidden" asp-for="Id" />
 
-                <div class="form-group">
-                    <label asp-for="OldPassword">Старый пароль</label>
-                    <input type="password" class="form-control" asp-for="OldPassword" />
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label asp-for="OldPassword">
+                            <i class="fas fa-key"></i> Старый пароль
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" class="form-control" asp-for="OldPassword" placeholder="Введите текущий пароль" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NewPassword">
+                            <i class="fas fa-key"></i> Новый пароль
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" class="form-control" asp-for="NewPassword" placeholder="Введите новый пароль" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ConfirmNewPassword">
+                            <i class="fas fa-redo"></i> Повторите пароль
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" class="form-control" asp-for="ConfirmNewPassword" placeholder="Повторите новый пароль" />
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="NewPassword">Новый пароль</label>
-                    <input type="password" class="form-control" asp-for="NewPassword" />
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="ConfirmNewPassword">Повторите пароль</label>
-                    <input type="password" class="form-control" asp-for="ConfirmNewPassword" />
-                </div>
-
-                <button type="submit" class="btn btn-accent">Обновить пароль</button>
+                <button type="submit" class="btn btn-accent btn-save">
+                    <i class="fas fa-sync-alt"></i> Обновить пароль
+                </button>
             </form>
         </div>
     </section>
 </div>
+
+@section Scripts {
+    <script src="~/js/Profile.js"></script>
+}

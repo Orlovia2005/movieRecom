@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using plt.Models.Model;
-using plt.Models.ViewModel;
+using movieRecom.Models.Model;
+using movieRecom.Models.ViewModel;
 using System.Security.Claims;
 
-namespace plt.Controllers
+namespace movieRecom.Controllers
 {
     public class AccountController : BaseController
     {
@@ -28,7 +28,6 @@ namespace plt.Controllers
                 Name = model.Name,
                 LastName = model.LastName,
                 Email = model.Email,
-                RoleId = model.Roleid,
                 Password = hasher.HashPassword(null!, model.Password),
                 AvatarUrl = "/Images/BaseAvatar.jpg"
             };
@@ -57,7 +56,6 @@ namespace plt.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var user = await _context.Users
-                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Email == model.Email);
 
             if (user == null)
@@ -198,9 +196,7 @@ namespace plt.Controllers
                 new Claim("last_name", user.LastName ?? string.Empty),
                 new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                 new Claim("avatar_url", user.AvatarUrl ?? string.Empty),
-                new Claim(ClaimTypes.Role, user.Role?.RoleType ?? string.Empty),
-                new Claim("role_id", user.RoleId.ToString()),
-                new Claim("Base_Price", user.BasePrice.ToString()),
+
                 
 
             };

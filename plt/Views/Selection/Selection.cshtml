@@ -1,0 +1,205 @@
+﻿
+@model movieRecom.Models.ViewModel.SelectionViewModel
+@{
+    ViewData["Title"] = "Настройка Подбора";
+}
+
+<style>
+    /* Дополнительные стили для страницы настройки подбора, в неоновом стиле */
+    .selection-card {
+        background: var(--color-dark-surface);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 0 25px rgba(255, 0, 255, 0.2); /* Неоновая тень */
+        width: 800px;
+        max-width: 95%;
+        margin: 40px auto;
+        border: 1px solid rgba(0, 255, 255, 0.1);
+    }
+
+    .selection-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 32px;
+        font-weight: bold;
+        color: var(--color-neon-blue);
+        text-shadow: var(--glow-text);
+    }
+
+    .form-section-title {
+        font-size: 1.5em;
+        color: var(--color-neon-purple);
+        margin-top: 30px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 0, 255, 0.1);
+        padding-bottom: 5px;
+    }
+
+    .tag-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .tag-input {
+        display: none;
+    }
+
+    .tag-label {
+        background: var(--color-dark-bg);
+        color: var(--color-text-secondary);
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        border: 1px solid var(--color-dark-surface);
+        transition: all 0.3s ease;
+    }
+
+    .tag-input:checked + .tag-label {
+        background: var(--color-neon-blend);
+        color: var(--color-text-light);
+        border-color: var(--color-neon-blue);
+        box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    }
+
+    .tag-label:hover {
+        border-color: var(--color-neon-purple);
+        color: var(--color-neon-purple);
+    }
+
+    .slider-group {
+        margin-top: 20px;
+    }
+
+        .slider-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--color-text-light);
+        }
+
+    /* Стили для кастомного ползунка (для кроссбраузерности может потребоваться больше кода) */
+    input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        background: var(--color-dark-bg);
+        border-radius: 5px;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neon-blue);
+            cursor: pointer;
+            box-shadow: var(--glow-blue);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neon-blue);
+            cursor: pointer;
+            box-shadow: var(--glow-blue);
+        }
+
+</style>
+
+<div class="body-content">
+    <div class="container">
+        <div class="selection-card">
+            <h2 class="selection-title">Настройка Умного Подбора</h2>
+            <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 40px;">
+                Помогите нашему ИИ понять, что вы хотите посмотреть прямо сейчас.
+            </p>
+
+            <form method="post">
+
+                <!-- Секция 1: Основные Предпочтения (Жанр и Настроение) -->
+                <div class="form-section">
+                    <h3 class="form-section-title">1. Жанр и Настроение</h3>
+
+                    <div class="form-group">
+                        <label>Выберите жанры (можно несколько):</label>
+                        <div class="tag-group">
+                            @{
+                                var genres = new[] { "Боевик", "Комедия", "Фантастика", "Ужасы", "Драма", "Триллер", "Романтика", "Документальный", "Анимация" };
+                                foreach (var genre in genres)
+                                {
+                                    <input type="checkbox" id="@genre" name="genres" value="@genre" class="tag-input" />
+                                    <label for="@genre" class="tag-label">@genre</label>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 25px;">
+                        <label>Какое у вас настроение?</label>
+                        <div class="tag-group">
+                            @{
+                                var moods = new[] { "Легкое", "Интенсивное", "Задумчивое", "Ностальгическое", "Веселое", "Тревожное" };
+                                foreach (var mood in moods)
+                                {
+                                    <input type="radio" id="@mood" name="mood" value="@mood" class="tag-input" />
+                                    <label for="@mood" class="tag-label">@mood</label>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Секция 2: Ограничения (Продолжительность и Год) -->
+                <div class="form-section">
+                    <h3 class="form-section-title">2. Ограничения</h3>
+
+                    <div class="form-group slider-group">
+                        <label for="runtime">Максимальная продолжительность (мин): <span id="runtimeValue">120</span></label>
+                        <input type="range" id="runtime" name="runtime" min="60" max="240" value="120" oninput="document.getElementById('runtimeValue').innerText = this.value" />
+                    </div>
+
+                    <div class="form-group slider-group">
+                        <label for="year">Минимальный год выпуска: <span id="yearValue">2000</span></label>
+                        <input type="range" id="year" name="year" min="1950" max="2025" value="2000" oninput="document.getElementById('yearValue').innerText = this.value" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rating">Возрастной рейтинг:</label>
+                        <select id="rating" name="rating" class="form-control">
+                            <option value="any">Любой</option>
+                            <option value="G">G (Для всех)</option>
+                            <option value="PG">PG (Рекомендуется присутствие родителей)</option>
+                            <option value="PG-13">PG-13 (Не рекомендуется детям до 13)</option>
+                            <option value="R">R (Лица до 17 только в сопровождении)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Секция 3: Уточнение (Для контент-базированного подбора) -->
+                <div class="form-section">
+                    <h3 class="form-section-title">3. Уточнение</h3>
+
+                    <div class="form-group">
+                        <label for="seedMovie">Фильм, который мне недавно понравился (для лучшей точности):</label>
+                        <input type="text" id="seedMovie" name="seedMovie" class="form-control" placeholder="Например: 'Бегущий по лезвию 2049'" />
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <button type="submit" class="btn btn-accent hero-cta-btn">
+                        <i class="fas fa-search"></i> Найти Идеальный Фильм
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

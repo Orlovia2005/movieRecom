@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using plt.Models.Model;
+using movieRecom.Models.Model;
 
 
-namespace plt.Models.ViewModel
+namespace movieRecom.Models.ViewModel
 {
     public class RegisterViewModel : BaseViewModel
     {

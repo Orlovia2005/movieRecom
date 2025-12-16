@@ -1,5 +1,5 @@
 ﻿
-namespace plt.Models.ViewModel
+namespace movieRecom.Models.ViewModel
 {
     public class ProfileViewModel : BaseViewModel
     {

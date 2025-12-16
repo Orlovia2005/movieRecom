@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 
-namespace plt.Models.Model
+namespace movieRecom.Models.Model
 {
     public partial class EducationDbContext : DbContext
     {
@@ -66,14 +66,7 @@ namespace plt.Models.Model
                     .HasMaxLength(255)
                     .HasColumnName("password");
 
-                entity.Property(e => e.RoleId)
-                    .HasColumnName("role_id");
-
-                entity.HasOne(u => u.Role)
-                      .WithMany()
-                      .HasForeignKey(u => u.RoleId)
-                      .HasConstraintName("fk_users_roles_role_id")
-                      .OnDelete(DeleteBehavior.Restrict);
+                
             });
 
             

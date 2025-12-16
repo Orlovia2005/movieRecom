@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 
-namespace plt.Models.ViewModel
+namespace movieRecom.Models.ViewModel
 {
     /// <summary>
     /// Базовая ViewModel с реализацией INotifyPropertyChanged, IsModified и дополнительными функциями

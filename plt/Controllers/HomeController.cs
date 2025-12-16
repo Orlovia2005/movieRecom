@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using plt.Models.ViewModel;
+using movieRecom.Models.ViewModel;
 
-namespace plt.Controllers
+namespace movieRecom.Controllers
 {
     public class HomeController : Controller
     {

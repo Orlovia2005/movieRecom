@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using plt.Models.Model; // ваш DbContext
+using movieRecom.Models.Model; // ваш DbContext
 
-namespace plt.Models.Model
+namespace movieRecom.Models.Model
 {
 
     public interface ICurrentUserService
@@ -37,7 +37,7 @@ namespace plt.Models.Model
             if (UserId == null) return null;
 
             _cachedUser = await _context.Users
-                .Include(u => u.Role) // чтобы сразу загрузить роль
+                
                 .FirstOrDefaultAsync(u => u.Id == UserId);
 
             return _cachedUser;

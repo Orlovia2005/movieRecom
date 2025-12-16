@@ -1,8 +1,71 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@{
+    ViewData["Title"] = "Умный подбор фильмов с ML";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="body-content">
+    <div class="container">
+
+        <!-- 1. Hero Section (Главный экран) -->
+        <section class="hero-section">
+            <h1 class="hero-title">
+                Ваш Идеальный Фильм
+                <br>
+                На Основе Искусственного Интеллекта
+            </h1>
+            <p class="hero-subtitle">
+                Больше никаких бесконечных поисков. Наш ML-сервис анализирует ваши предпочтения,
+                настроение и историю просмотров, чтобы предложить кино, которое вы полюбите.
+            </p>
+            <a href="#" class="btn hero-cta-btn">Начать Подбор</a>
+        </section>
+
+        <!-- 2. Features Section (Особенности сервиса) -->
+        <section class="features-section">
+            <h2 class="section-title">Почему Мы?</h2>
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i> <!-- Иконка для ML -->
+                    </div>
+                    <h3 class="feature-title">Умный ML-Алгоритм</h3>
+                    <p>
+                        Используем передовые модели машинного обучения для глубокого анализа
+                        контента и пользовательских данных.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-magic"></i> <!-- Иконка для Персонализации -->
+                    </div>
+                    <h3 class="feature-title">Невероятная Точность</h3>
+                    <p>
+                        Наши рекомендации попадают точно в цель, предсказывая ваши желания
+                        даже до того, как вы о них подумали.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i> <!-- Иконка для Скорости -->
+                    </div>
+                    <h3 class="feature-title">Мгновенный Результат</h3>
+                    <p>
+                        Получите список идеальных фильмов за считанные секунды.
+                        Быстро, как вспышка неона.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. Call to Action Section (Дополнительный призыв) -->
+        <section style="text-align: center; padding: 40px 0;">
+            <h2 class="section-title" style="font-size: 2em;">Готовы к новому киноопыту?</h2>
+            <a href="#" class="btn btn-accent hero-cta-btn" style="margin-top: 20px;">Зарегистрироваться и Начать</a>
+        </section>
+
+    </div>
 </div>

@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using plt.Models.Model;
+using movieRecom.Models.Model;
 
 #nullable disable
 
-namespace plt.Migrations
+namespace movieRecom.Migrations
 {
     [DbContext(typeof(EducationDbContext))]
-    [Migration("20250917162440_users")]
-    partial class users
+    [Migration("20251216064403_newdb1")]
+    partial class newdb1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace plt.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("plt.models.Role", b =>
+            modelBuilder.Entity("movieRecom.Models.Model.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,25 +32,8 @@ namespace plt.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("RoleType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("role_type");
-
-                    b.HasKey("Id")
-                        .HasName("roles_pkey");
-
-                    b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("plt.models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -58,7 +41,7 @@ namespace plt.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("email");
 
-                    b.Property<string>("Login")
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -74,10 +57,6 @@ namespace plt.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("password");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("role_id");
-
                     b.HasKey("Id")
                         .HasName("users_pkey");
 
@@ -85,21 +64,7 @@ namespace plt.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_users_email");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("plt.models.User", b =>
-                {
-                    b.HasOne("plt.models.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_roles_role_id");
-
-                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }

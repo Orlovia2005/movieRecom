@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 
-namespace plt.Models.ViewModel
+namespace movieRecom.Models.ViewModel
 {
     public class LoginViewModel:  BaseViewModel
     {

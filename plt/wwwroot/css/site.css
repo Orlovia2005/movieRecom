@@ -1,8 +1,8 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background-color: #fff; /* белый фон */
-    color: #111; /* почти чёрный текст */
+    background-color: #fff;
+    color: #1a1a2e; /* темно-синий вместо чёрного */
 }
 
 /* Контейнер */
@@ -14,10 +14,10 @@ body {
 
 /* Шапка */
 .site-header {
-    background: #fff; /* белая шапка */
+    background: #fff;
     padding: 15px 0;
-    border-bottom: 1px solid #eee;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-bottom: 1px solid #e6f0ff;
+    box-shadow: 0 2px 8px rgba(26, 26, 46, 0.05);
 }
 
 .header-container {
@@ -30,54 +30,56 @@ body {
     text-decoration: none;
     font-size: 22px;
     font-weight: bold;
-    color: #111;
+    color: #1a1a2e;
 }
 
 .nav-menu a {
     margin: 0 12px;
     text-decoration: none;
-    color: #111;
+    color: #1a1a2e;
     font-weight: 500;
     transition: color 0.2s ease-in;
 }
 
     .nav-menu a:hover {
-        color: #f97316; /* оранжевый при наведении */
+        color: #2563eb; /* яркий синий при наведении */
     }
 
 /* Кнопки */
 .btn {
-    background: #f97316; /* оранжевая кнопка */
+    background: #2563eb; /* яркий синий */
     color: #fff;
     padding: 10px 20px;
     border-radius: 25px;
     text-decoration: none;
     transition: background 0.2s ease-in, transform 0.1s;
-    border: none; /* Убираем обводку по умолчанию */
+    border: none;
     outline: none;
 }
 
     .btn:hover {
-        background: #d9620e; /* чуть темнее при наведении */
+        background: #1d4ed8; /* темнее синий при наведении */
         transform: scale(1.03);
     }
 
 .btn-accent {
-    background: #111; /* чёрная кнопка */
+    background: #1a1a2e; /* темно-синий */
     color: white;
 }
 
     .btn-accent:hover {
-        background: #333;
+        background: #2d3748;
     }
+
 .btn_logaut {
-    background: #e53935; /* красная кнопка */
+    background: #dc2626; /* красная кнопка */
     color: white;
 }
 
     .btn_logaut:hover {
-        background: #b71c1c;
+        background: #b91c1c;
     }
+
 /* Контент */
 .body-content {
     padding: 20px 0;
@@ -91,14 +93,13 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-
 }
 
 .form-card {
     background: #ffffff;
     padding: 50px 60px;
     border-radius: 16px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 25px rgba(26, 26, 46, 0.12);
     width: 500px;
     max-width: 95%;
 }
@@ -108,7 +109,7 @@ body {
     margin-bottom: 30px;
     font-size: 28px;
     font-weight: bold;
-    color: #111; /* чёрный */
+    color: #1a1a2e;
 }
 
 .form-group {
@@ -119,21 +120,21 @@ body {
         display: block;
         margin-bottom: 8px;
         font-weight: 600;
-        color: #111;
+        color: #1a1a2e;
     }
 
 .form-control {
     width: 95%;
     padding: 14px;
-    border: 1px solid #ddd;
+    border: 1px solid #cbd5e1;
     border-radius: 10px;
     font-size: 16px;
-    background: #f9f9f9;
-    margin-right:7px;
+    background: #f8fafc;
+    margin-right: 7px;
 }
 
     .form-control:focus {
-        border-color: #f97316; /* оранжевая рамка */
+        border-color: #2563eb;
         outline: none;
         background: #fff;
     }
@@ -158,7 +159,7 @@ body {
     font-weight: bold;
     border: none;
     border-radius: 12px;
-    background: #f97316;
+    background: #2563eb;
     color: white;
     cursor: pointer;
     text-align: center;
@@ -167,24 +168,23 @@ body {
 }
 
     .btn-register:hover {
-        background: #d9620e;
+        background: #1d4ed8;
         transform: scale(1.02);
-        
     }
 
 /* Футер */
 .site-footer {
     margin-top: 30px;
     padding: 20px 0;
-    background: #111;
+    background: #1a1a2e;
     text-align: center;
     color: #fff;
     font-size: 14px;
 }
+
 /* ---------------------- */
 /* Страница Профиль   */
 /* ---------------------- */
-
 .profile-container {
     display: flex;
     margin-top: 30px;
@@ -195,7 +195,7 @@ body {
     background: #fff;
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(26, 26, 46, 0.1);
     margin-right: 20px;
 }
 
@@ -215,12 +215,12 @@ body {
     }
 
         .profile-sidebar li:hover {
-            background: #f97316; /* акцентный оранжевый */
+            background: #3b82f6; /* синий */
             color: white;
         }
 
         .profile-sidebar li.active {
-            background: #f97316;
+            background: #2563eb;
             color: white;
         }
 
@@ -229,7 +229,7 @@ body {
     background: #fff;
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(26, 26, 46, 0.1);
 }
 
 .tab-content {
@@ -247,10 +247,11 @@ body {
     margin-bottom: 15px;
     object-fit: cover;
 }
+
 .file-name {
     margin-left: 12px;
     font-size: 14px;
-    color: #555;
+    color: #4b5563;
     font-style: italic;
     vertical-align: middle;
 }
@@ -286,15 +287,15 @@ body {
 
 /* Типы уведомлений */
 .toast-success {
-    background-color: #f97316; /* оранжевый */
+    background-color: #2563eb; /* синий */
 }
 
 .toast-error {
-    background-color: #e53935; /* красный */
+    background-color: #dc2626; /* красный */
 }
 
 .toast-info {
-    background-color: #111; /* чёрный */
+    background-color: #1a1a2e; /* темно-синий */
 }
 
 /* Анимация появления */
@@ -313,7 +314,6 @@ body {
     margin-left: 8px;
 }
 
-
 /* аватар */
 .avatar-link {
     display: inline-block;
@@ -326,18 +326,16 @@ body {
     object-fit: cover;
     cursor: pointer;
     transition: transform 0.2s ease;
-    border: 2px solid #f97316; /* оранжевая обводка */
+    border: 2px solid #2563eb; /* синяя обводка */
 }
 
     .avatar-img:hover {
         transform: scale(1.05);
     }
 
-
 /* ---------------------- */
 /* Страница клиентов      */
 /* ---------------------- */
-
 .client-header {
     display: flex;
     align-items: center;
@@ -349,7 +347,7 @@ body {
     .client-header h2 {
         font-size: 28px;
         font-weight: bold;
-        color: #111;
+        color: #1a1a2e;
         margin: 0;
     }
 
@@ -361,7 +359,7 @@ body {
 .client-table-wrapper {
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(26, 26, 46, 0.08);
     overflow: hidden;
 }
 
@@ -373,24 +371,24 @@ body {
     .client-table th, .client-table td {
         padding: 14px 18px;
         text-align: left;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f1f5f9;
         font-size: 15px;
     }
 
     .client-table th {
-        background: #fafafa;
+        background: #f8fafc;
         font-weight: 600;
-        color: #333;
+        color: #334155;
     }
 
     .client-table tr:hover {
-        background: #fff4ec;
+        background: #f0f9ff;
         transition: 0.2s;
     }
 
 .balance {
     font-weight: 600;
-    color: #f97316;
+    color: #2563eb;
 }
 
 .actions {
@@ -407,14 +405,13 @@ body {
 .no-data {
     text-align: center;
     padding: 30px 0;
-    color: #777;
+    color: #64748b;
     font-style: italic;
 }
-/* ---------------------- */
-/* Модальное окно (fixed поверх всех элементов) */
-/* ---------------------- */
 
-/* Общее позиционирование модалки */
+/* ---------------------- */
+/* Модальное окно        */
+/* ---------------------- */
 .modal {
     position: fixed !important;
     top: 0;
@@ -423,23 +420,21 @@ body {
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-    z-index: 1055 !important; /* поверх всего */
+    z-index: 1055 !important;
     display: none;
-    background: transparent; /* Bootstrap сам добавит затемнение */
+    background: transparent;
 }
 
-/* Фон затемнения за окном */
 .modal-backdrop {
     position: fixed !important;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.45) !important;
+    background-color: rgba(26, 26, 46, 0.45) !important;
     z-index: 1050 !important;
 }
 
-/* Диалог (контейнер внутри модалки) */
 .modal-dialog {
     max-width: 500px;
     margin: 1.75rem auto;
@@ -448,44 +443,39 @@ body {
     min-height: calc(100% - 3.5rem);
 }
 
-/* Контент */
 .modal-content {
     background: #ffffff;
     border-radius: 16px;
     border: none;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 30px rgba(26, 26, 46, 0.2);
     overflow: hidden;
     animation: modalFadeIn 0.25s ease-out;
 }
 
-/* Заголовок */
 .modal-header {
     background: #fff;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #e2e8f0;
     padding: 20px 24px;
 }
 
 .modal-title {
     font-size: 22px;
     font-weight: 700;
-    color: #111;
+    color: #1a1a2e;
     margin: 0;
 }
 
-/* Тело */
 .modal-body {
     padding: 28px 30px;
     background: #fff;
 }
 
-/* Низ (если используется) */
 .modal-footer {
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid #e2e8f0;
     padding: 16px 24px;
     background: #fff;
 }
 
-/* Кнопка закрытия */
 .btn-close {
     filter: invert(0.3);
     opacity: 0.6;
@@ -496,11 +486,10 @@ body {
         opacity: 1;
     }
 
-/* Поля формы внутри модалки */
 .modal-body .form-control {
     width: 100%;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
     border-radius: 10px;
     padding: 12px;
     font-size: 15px;
@@ -508,14 +497,13 @@ body {
 }
 
     .modal-body .form-control:focus {
-        border-color: #f97316;
+        border-color: #2563eb;
         outline: none;
         background: #fff;
     }
 
-/* Кнопка отправки */
 .modal-body .btn-success {
-    background: #f97316;
+    background: #2563eb;
     border: none;
     padding: 12px;
     font-weight: 600;
@@ -526,11 +514,10 @@ body {
 }
 
     .modal-body .btn-success:hover {
-        background: #d9620e;
+        background: #1d4ed8;
         transform: scale(1.03);
     }
 
-/* Плавное появление окна */
 @keyframes modalFadeIn {
     from {
         opacity: 0;
@@ -545,9 +532,9 @@ body {
 
 /* Стили для модального окна информации о клиенте */
 .client-info h4 {
-    color: #111;
+    color: #1a1a2e;
     margin-bottom: 20px;
-    border-bottom: 2px solid #f97316;
+    border-bottom: 2px solid #2563eb;
     padding-bottom: 10px;
 }
 
@@ -561,23 +548,23 @@ body {
     }
 
 .services-history {
-    border-top: 1px solid #eee;
+    border-top: 1px solid #e2e8f0;
     padding-top: 15px;
 }
 
     .services-history h5 {
         margin-bottom: 15px;
-        color: #111;
+        color: #1a1a2e;
     }
 
 .service-item {
     display: flex;
     justify-content: space-between;
     padding: 8px 12px;
-    background: #f9f9f9;
+    background: #f8fafc;
     border-radius: 8px;
     margin-bottom: 8px;
-    border-left: 3px solid #f97316;
+    border-left: 3px solid #2563eb;
 }
 
     .service-item:last-child {
@@ -588,7 +575,7 @@ body {
 .loading {
     text-align: center;
     padding: 20px;
-    color: #777;
+    color: #64748b;
 }
 
 /* Адаптивность для модального окна */
@@ -596,5 +583,1067 @@ body {
     .modal-dialog.modal-lg {
         margin: 10px;
         max-width: calc(100% - 20px);
+    }
+}
+
+
+
+Projects
+
+
+Collaborate
+
+Share
+
+вот мой лэйяут, я делаю проект н аасп нет на рэйзор. сделай красивую главную станицу, это будет сервис по умному подбору фильмов с помощью мл, используй неон синий фиолетовый и тд.
+pasted_content.txt
+Text · 13.89 KB
+Lite
+Понял! Я разработаю красивую главную страницу для вашего сервиса по подбору фильмов на ASP.NET Razor, используя неоновые синие и фиолетовые тона. Прежде чем приступить к дизайну и коду, мне нужно создать план.
+I understand the task is to design a visually appealing main page with neon blue and purple colors for a movie recommendation service using ASP.NET Razor. Currently, I'm preparing a detailed plan before starting the design and development.
+
+The current stylesheet is dark-themed with blue accents, focusing on a sleek, modern look suitable for neon blue and purple colors. Next, I’ll adapt the color scheme to match the neon blue and purple neon aesthetic.
+
+Developed a neon-themed dark CSS and main page structure with Hero and Features sections for the ASP.NET Razor movie app. Next, will refine layout and visuals.
+
+Lite
+Я разработал главную страницу для вашего сервиса по умному подбору фильмов, используя темную тему с неоновыми синими и фиолетовыми акцентами, как вы и просили.
+В приложении вы найдете два файла:
+Index.cshtml: HTML-разметка главной страницы (Hero Section и секция с особенностями).
+neon-theme.css: Адаптированный CSS-файл, который:
+Переводит ваш существующий лэйяут на темную тему.
+Вводит неоновые цвета (--color-neon-blue, --color-neon-purple) и эффекты свечения (--glow-blue, --glow-purple).
+Содержит стили для новых секций главной страницы (.hero-section, .features-grid, .feature-card).
+Инструкции по внедрению:
+CSS-файл: Сохраните содержимое neon-theme.css в вашем проекте, например, как /wwwroot/ css/neon-theme.css.
+Подключение CSS: В вашем файле _Layout.cshtml замените или дополните подключение стилей, чтобы использовать новый файл.
+HTML-файл: Сохраните содержимое Index.cshtml в папке /Pages вашего проекта.
+Иконки: Для корректного отображения иконок (мозг, магия, молния) в секции "Почему Мы?" необходимо подключить библиотеку Font Awesome в вашем _Layout.cshtml (если она еще не подключена):
+HTML
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" / >
+Это создаст современный, привлекательный и соответствующий тематике ML-сервиса дизайн. Дайте знать, если потребуется что-то изменить или добавить!
+Index.cshtml
+File · 3.77 KB
+neon-theme.css
+Code · 7.26 KB
+
+View all files in this task
+Task completed
+How was this result?
+Suggested follow-ups
+Index.cshtml
+@page
+@model IndexModel
+@ {
+    ViewData ["Title"] = "Умный подбор фильмов с ML";
+}
+
+<div class="body-content" >
+<div class="container" >
+<!-- 1. Hero Section (Главный экран) -->
+<section class="hero-section" >
+<h1 class="hero-title" >
+Ваш Идеальный Фильм
+<br >
+На Основе Искусственного Интеллекта
+</h1 >
+<p class="hero-subtitle" >
+Больше никаких бесконечных поисков. Наш ML-сервис анализирует ваши предпочтения,
+настроение и историю просмотров, чтобы предложить кино, которое вы полюбите.
+</p >
+<a href="#" class="btn hero-cta-btn" > Начать Подбор</a >
+</section >
+<!-- 2. Features Section (Особенности сервиса) -->
+<section class="features-section" >
+<h2 class="section-title" > Почему Мы?</h2 >
+<div class="features-grid" >
+
+<div class="feature-card" >
+<div class="feature-icon" >
+<i class="fas fa-brain" > </i > <!-- Иконка для ML -->
+</div >
+<h3 class="feature-title" > Умный ML-Алгоритм</h3 >
+<p >
+Используем передовые модели машинного обучения для глубокого анализа
+контента и пользовательских данных.
+</p >
+</div >
+
+<div class="feature-card" >
+<div class="feature-icon" >
+<i class="fas fa-magic" > </i > <!-- Иконка для Персонализации -->
+</div >
+<h3 class="feature-title" > Невероятная Точность</h3 >
+<p >
+Наши рекомендации попадают точно в цель, предсказывая ваши желания
+даже до того, как вы о них подумали.
+</p >
+</div >
+
+<div class="feature-card" >
+<div class="feature-icon" >
+<i class="fas fa-bolt" > </i > <!-- Иконка для Скорости -->
+</div >
+<h3 class="feature-title" > Мгновенный Результат</h3 >
+<p >
+Получите список идеальных фильмов за считанные секунды.
+Быстро, как вспышка неона.
+</p >
+</div >
+
+</div >
+</section >
+<!-- 3. Call to Action Section (Дополнительный призыв) -->
+<section style="text-align: center; padding: 40px 0;" >
+<h2 class="section-title" style="font-size: 2em;" > Готовы к новому киноопыту?</h2 >
+<a href="#" class="btn btn-accent hero-cta-btn" style="margin-top: 20px;" > Зарегистрироваться и Начать</a >
+</section >
+
+</div >
+</div >
+<!--
+ПРИМЕЧАНИЕ:
+Для корректного отображения иконок (fas fa-brain, fas fa-magic, fas fa-bolt)
+необходимо подключить библиотеку Font Awesome в вашем _Layout.cshtml:
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" / >
+-->
+Manus's computer
+Manus is using Editor
+Task progress
+3 / 3
+Разработка новой цветовой схемы (неон/дарк) и структуры главной страницы
+Создание файла Index.cshtml с HTML и адаптированным CSS
+Доставка результата пользователю
+Send message to Manus
+
+neon-theme.css
+/* 
+ * Адаптированный CSS на основе предоставленного лэйяута, 
+ * с использованием темной основы и неоновых акцентов (синий/фиолетовый).
+ */
+:root {
+    /* Основные цвета */
+    --color-dark-bg: #0A0A1A;
+    --color-dark-surface: #1A1A2E;
+    --color-text-light: #E0E0FF;
+    --color-text-secondary: #A0A0C0;
+    /* Неоновые акценты */
+    --color-neon-blue: #00FFFF; /* Cyan/Aqua */
+    --color-neon-purple: #FF00FF; /* Magenta/Fuchsia */
+    --color-neon-blend: #8A2BE2; /* BlueViolet */
+    /* Эффекты свечения */
+    --glow-blue: 0 0 5px var(--color-neon-blue), 0 0 10px var(--color-neon-blue), 0 0 20px var(--color-neon-blue);
+    --glow-purple: 0 0 5px var(--color-neon-purple), 0 0 10px var(--color-neon-purple), 0 0 20px var(--color-neon-purple);
+    --glow-text: 0 0 2px var(--color-neon-blue);
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--color-dark-bg); /* Темный фон */
+    color: var(--color-text-light); /* Светлый текст */
+    line-height: 1.6;
+}
+
+/* Контейнер */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Шапка */
+.site-header {
+    background: var(--color-dark-surface); /* Темная поверхность */
+    padding: 15px 0;
+    border-bottom: 1px solid var(--color-neon-blend);
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.3); /* Неоновая тень */
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a {
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--color-neon-blue); /* Неоновый синий логотип */
+    text-shadow: var(--glow-text);
+    transition: text-shadow 0.3s ease;
+}
+
+    .logo a:hover {
+        color: var(--color-neon-purple);
+        text-shadow: 0 0 5px var(--color-neon-purple);
+    }
+
+.nav-menu a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: var(--color-text-light);
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+    .nav-menu a:hover {
+        color: var(--color-neon-blue); /* Неоновый синий при наведении */
+        text-shadow: var(--glow-text);
+    }
+
+/* Кнопки */
+.btn {
+    background: var(--color-neon-blend); /* Фиолетовый акцент */
+    color: var(--color-text-light);
+    padding: 10px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.1s, box-shadow 0.3s ease;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+    .btn:hover {
+        background: var(--color-neon-purple); /* Неоновый фиолетовый при наведении */
+        transform: scale(1.05);
+        box-shadow: var(--glow-purple);
+    }
+
+.btn-accent {
+    background: var(--color-neon-blue); /* Неоновый синий */
+    color: var(--color-dark-bg);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+    .btn-accent:hover {
+        background: var(--color-neon-blue);
+        box-shadow: var(--glow-blue);
+        color: var(--color-dark-bg);
+    }
+
+/* Контент */
+.body-content {
+    padding: 40px 0;
+    min-height: calc(100vh - 150px); /* Учитываем шапку и футер */
+}
+
+/* ---------------------- */
+/* Главная страница (Hero Section) */
+/* ---------------------- */
+
+.hero-section {
+    text-align: center;
+    padding: 80px 0;
+    background: radial-gradient(circle at center, rgba(138, 43, 226, 0.1) 0%, rgba(10, 10, 26, 0) 70%);
+}
+
+.hero-title {
+    font-size: 4.5em;
+    font-weight: 900;
+    margin-bottom: 20px;
+    color: var(--color-text-light);
+    text-shadow: var(--glow-blue);
+    letter-spacing: 2px;
+}
+
+.hero-subtitle {
+    font-size: 1.5em;
+    color: var(--color-text-secondary);
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-cta-btn {
+    font-size: 1.2em;
+    padding: 15px 40px;
+    border-radius: 30px;
+}
+
+/* ---------------------- */
+/* Секция Особенностей (Features) */
+/* ---------------------- */
+
+.features-section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.feature-card {
+    background: var(--color-dark-surface);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 25px rgba(255, 0, 255, 0.3);
+    }
+
+.feature-icon {
+    font-size: 3em;
+    color: var(--color-neon-purple);
+    margin-bottom: 15px;
+    text-shadow: var(--glow-purple);
+}
+
+.feature-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--color-neon-blue);
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 2.5em;
+    font-weight: 800;
+    color: var(--color-neon-blue);
+    margin-bottom: 10px;
+    text-shadow: var(--glow-text);
+}
+
+/* ---------------------- */
+/* Футер */
+/* ---------------------- */
+.site-footer {
+    margin-top: 30px;
+    padding: 20px 0;
+    background: var(--color-dark-surface);
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.footer-links a {
+    color: var(--color-text-secondary);
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    .footer-links a:hover {
+        color: var(--color-neon-blue);
+    }
+
+/* Адаптация существующих стилей для темной темы */
+
+/* Формы (если будут использоваться на главной) */
+.form-card {
+    background: var(--color-dark-surface);
+    box-shadow: 0 8px 25px rgba(0, 255, 255, 0.12);
+}
+
+.form-title {
+    color: var(--color-neon-blue);
+}
+
+.form-group label {
+    color: var(--color-text-light);
+}
+
+.form-control {
+    background: var(--color-dark-bg);
+    border: 1px solid var(--color-dark-surface);
+    color: var(--color-text-light);
+}
+
+    .form-control:focus {
+        border-color: var(--color-neon-blue);
+        background: var(--color-dark-surface);
+    }
+
+/* Прочие элементы */
+.balance {
+    color: var(--color-neon-blue);
+}
+
+.client-table th {
+    background: var(--color-dark-surface);
+    color: var(--color-text-light);
+}
+
+.client-table tr:hover {
+    background: #1A1A3E;
+}
+
+.modal-content {
+    background: var(--color-dark-surface);
+    box-shadow: 0 12px 30px rgba(255, 0, 255, 0.2);
+}
+
+.modal-header {
+    background: var(--color-dark-surface);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.modal-title {
+    color: var(--color-neon-blue);
+}
+
+.modal-body {
+    background: var(--color-dark-surface);
+}
+
+.modal-footer {
+    background: var(--color-dark-surface);
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.modal-body .form-control {
+    background: var(--color-dark-bg);
+    border: 1px solid var(--color-dark-surface);
+}
+
+    .modal-body .form-control:focus {
+        border-color: var(--color-neon-blue);
+    }
+
+:root {
+    /* Основные цвета */
+    --color-dark-bg: #0A0A1A;
+    --color-dark-surface: #1A1A2E;
+    --color-text-light: #E0E0FF;
+    --color-text-secondary: #A0A0C0;
+    /* Неоновые акценты */
+    --color-neon-blue: #00FFFF; /* Cyan/Aqua */
+    --color-neon-purple: #FF00FF; /* Magenta/Fuchsia */
+    --color-neon-blend: #8A2BE2; /* BlueViolet */
+    /* Эффекты свечения */
+    --glow-blue: 0 0 5px var(--color-neon-blue), 0 0 10px var(--color-neon-blue), 0 0 20px var(--color-neon-blue);
+    --glow-purple: 0 0 5px var(--color-neon-purple), 0 0 10px var(--color-neon-purple), 0 0 20px var(--color-neon-purple);
+    --glow-text: 0 0 2px var(--color-neon-blue);
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--color-dark-bg); /* Темный фон */
+    /* Добавляем неоновый градиент на фон */
+    background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.05) 0%, rgba(138, 43, 226, 0.05) 30%, var(--color-dark-bg) 70%);
+    background-attachment: fixed; /* Чтобы градиент оставался на месте при прокрутке */
+    color: var(--color-text-light); /* Светлый текст */
+    line-height: 1.6;
+}
+
+/* Контейнер */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Шапка */
+.site-header {
+    background: var(--color-dark-surface); /* Темная поверхность */
+    padding: 15px 0;
+    border-bottom: 1px solid var(--color-neon-blend);
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.3); /* Неоновая тень */
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a {
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--color-neon-blue); /* Неоновый синий логотип */
+    text-shadow: var(--glow-text);
+    transition: text-shadow 0.3s ease;
+}
+
+    .logo a:hover {
+        color: var(--color-neon-purple);
+        text-shadow: 0 0 5px var(--color-neon-purple);
+    }
+
+.nav-menu a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: var(--color-text-light);
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+    .nav-menu a:hover {
+        color: var(--color-neon-blue); /* Неоновый синий при наведении */
+        text-shadow: var(--glow-text);
+    }
+
+/* Кнопки */
+.btn {
+    background: var(--color-neon-blend); /* Фиолетовый акцент */
+    color: var(--color-text-light);
+    padding: 10px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.1s, box-shadow 0.3s ease;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+    .btn:hover {
+        background: var(--color-neon-purple); /* Неоновый фиолетовый при наведении */
+        transform: scale(1.05);
+        box-shadow: var(--glow-purple);
+    }
+
+.btn-accent {
+    background: var(--color-neon-blue); /* Неоновый синий */
+    color: var(--color-dark-bg);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+    .btn-accent:hover {
+        background: var(--color-neon-blue);
+        box-shadow: var(--glow-blue);
+        color: var(--color-dark-bg);
+    }
+
+/* Контент */
+.body-content {
+    padding: 40px 0;
+    min-height: calc(100vh - 150px); /* Учитываем шапку и футер */
+}
+
+/* ---------------------- */
+/* Главная страница (Hero Section) */
+/* ---------------------- */
+
+.hero-section {
+    text-align: center;
+    padding: 80px 0;
+    background: radial-gradient(circle at center, rgba(138, 43, 226, 0.1) 0%, rgba(10, 10, 26, 0) 70%);
+}
+
+.hero-title {
+    font-size: 4.5em;
+    font-weight: 900;
+    margin-bottom: 20px;
+    color: var(--color-text-light);
+    text-shadow: var(--glow-blue);
+    letter-spacing: 2px;
+}
+
+.hero-subtitle {
+    font-size: 1.5em;
+    color: var(--color-text-secondary);
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-cta-btn {
+    font-size: 1.2em;
+    padding: 15px 40px;
+    border-radius: 30px;
+}
+
+/* ---------------------- */
+/* Секция Особенностей (Features) */
+/* ---------------------- */
+
+.features-section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.feature-card {
+    background: var(--color-dark-surface);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 25px rgba(255, 0, 255, 0.3);
+    }
+
+.feature-icon {
+    font-size: 3em;
+    color: var(--color-neon-purple);
+    margin-bottom: 15px;
+    text-shadow: var(--glow-purple);
+}
+
+.feature-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--color-neon-blue);
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 2.5em;
+    font-weight: 800;
+    color: var(--color-neon-blue);
+    margin-bottom: 10px;
+    text-shadow: var(--glow-text);
+}
+
+/* ---------------------- */
+/* Футер */
+/* ---------------------- */
+.site-footer {
+    margin-top: 30px;
+    padding: 20px 0;
+    background: var(--color-dark-surface);
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.footer-links a {
+    color: var(--color-text-secondary);
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    .footer-links a:hover {
+        color: var(--color-neon-blue);
+    }
+
+/* Адаптация существующих стилей для темной темы */
+
+/* Формы (если будут использоваться на главной) */
+.form-card {
+    background: var(--color-dark-surface);
+    box-shadow: 0 8px 25px rgba(0, 255, 255, 0.12);
+}
+
+.form-title {
+    color: var(--color-neon-blue);
+}
+
+.form-group label {
+    color: var(--color-text-light);
+}
+
+.form-control {
+    background: var(--color-dark-bg);
+    border: 1px solid var(--color-dark-surface);
+    color: var(--color-text-light);
+}
+
+    .form-control:focus {
+        border-color: var(--color-neon-blue);
+        background: var(--color-dark-surface);
+    }
+
+/* Прочие элементы */
+.balance {
+    color: var(--color-neon-blue);
+}
+
+.client-table th {
+    background: var(--color-dark-surface);
+    color: var(--color-text-light);
+}
+
+.client-table tr:hover {
+    background: #1A1A3E;
+}
+
+.modal-content {
+    background: var(--color-dark-surface);
+    box-shadow: 0 12px 30px rgba(255, 0, 255, 0.2);
+}
+
+.modal-header {
+    background: var(--color-dark-surface);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.modal-title {
+    color: var(--color-neon-blue);
+}
+
+.modal-body {
+    background: var(--color-dark-surface);
+}
+
+.modal-footer {
+    background: var(--color-dark-surface);
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.modal-body .form-control {
+    background: var(--color-dark-bg);
+    border: 1px solid var(--color-dark-surface);
+}
+
+    .modal-body .form-control:focus {
+        border-color: var(--color-neon-blue);
+    }
+
+/* ---------------------- */
+/* Страница Профиля       */
+/* ---------------------- */
+
+.profile-container {
+    display: flex;
+    margin-top: 30px;
+    min-height: 70vh;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(10, 10, 26, 0.9) 100%);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.15);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+}
+
+.profile-sidebar {
+    width: 280px;
+    background: rgba(26, 26, 46, 0.9);
+    padding: 30px 20px;
+    border-right: 1px solid rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+    .profile-sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .profile-sidebar li {
+        padding: 15px 20px;
+        margin-bottom: 5px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        color: var(--color-text-secondary);
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .profile-sidebar li:hover {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--color-neon-blue);
+            border-color: rgba(0, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .profile-sidebar li.active {
+            background: rgba(138, 43, 226, 0.2);
+            color: var(--color-neon-purple);
+            border-color: rgba(138, 43, 226, 0.3);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .profile-sidebar li i {
+            font-size: 1.2em;
+            width: 24px;
+        }
+
+.logout-form {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.btn_logaut {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn_logaut:hover {
+        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+    }
+
+.profile-content {
+    flex: 1;
+    padding: 40px;
+    background: rgba(10, 10, 26, 0.7);
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+.profile-header {
+    margin-bottom: 40px;
+    border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+    padding-bottom: 20px;
+}
+
+    .profile-header h2 {
+        font-size: 2.2em;
+        font-weight: 700;
+        color: var(--color-neon-blue);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+.profile-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1.1em;
+}
+
+.profile-form {
+    max-width: 800px;
+}
+
+.avatar-group {
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--color-neon-purple);
+    box-shadow: 0 0 25px rgba(138, 43, 226, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .avatar-wrapper:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 35px rgba(138, 43, 226, 0.6);
+    }
+
+.avatar-previewProfile {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.avatar-wrapper:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.avatar-overlay i {
+    color: var(--color-neon-blue);
+    font-size: 2em;
+    text-shadow: var(--glow-blue);
+}
+
+.avatar-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn-avatar {
+    background: rgba(138, 43, 226, 0.2);
+    color: var(--color-text-light);
+    border: 1px solid rgba(138, 43, 226, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 25px;
+}
+
+    .btn-avatar:hover {
+        background: rgba(138, 43, 226, 0.3);
+        border-color: var(--color-neon-purple);
+        box-shadow: var(--glow-purple);
+    }
+
+.file-name {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: var(--color-neon-blue);
+    font-size: 1.1em;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-neon-purple);
+    font-size: 1.1em;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 20px 14px 45px;
+    background: rgba(26, 26, 46, 0.8);
+    border: 2px solid rgba(138, 43, 226, 0.3);
+    border-radius: 12px;
+    color: var(--color-text-light);
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--color-neon-blue);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        background: rgba(26, 26, 46, 0.9);
+    }
+
+.btn-save {
+    padding: 16px 40px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    background: linear-gradient(135deg, var(--color-neon-blue) 0%, #0077ff 100%);
+    border: none;
+}
+
+    .btn-save:hover {
+        background: linear-gradient(135deg, #00d4ff 0%, var(--color-neon-blue) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+    }
+
+/* Анимация появления */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .profile-container {
+        flex-direction: column;
+    }
+
+    .profile-sidebar {
+        width: 100%;
+        padding: 20px;
+    }
+
+        .profile-sidebar ul {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .profile-sidebar li {
+            flex: 1;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+    .avatar-group {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-content {
+        padding: 20px;
+    }
+
+    .profile-header h2 {
+        font-size: 1.8em;
     }
 }

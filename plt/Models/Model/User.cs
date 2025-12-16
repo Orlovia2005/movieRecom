@@ -1,4 +1,4 @@
-﻿namespace plt.Models.Model
+﻿namespace movieRecom.Models.Model
 {
     public class User
     {

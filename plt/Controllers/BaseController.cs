@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using plt.Models.Model;
+using movieRecom.Models.Model;
 
-namespace plt.Controllers
+namespace movieRecom.Controllers
 {
     public abstract class BaseController : Controller
     {
@@ -29,7 +29,7 @@ namespace plt.Controllers
                 return null;
 
             _cachedUser = await _context.Users
-                .Include(u => u.Role)
+                
                 .FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
 
             return _cachedUser;
