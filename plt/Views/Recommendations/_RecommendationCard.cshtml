@@ -1,0 +1,53 @@
+@using movieRecom.Models.ViewModel
+@model MovieRecommendation
+@{
+    var confidenceClass = Model.Score >= 80 ? "high" : (Model.Score >= 60 ? "medium" : "low");
+    var confidenceText = Model.Score >= 80 ? "Уверены" : (Model.Score >= 60 ? "Понравится" : "Попробуйте");
+}
+
+<div class="rec-card">
+    <div class="rec-card-poster">
+        @if (!string.IsNullOrEmpty(Model.Movie.PosterUrl))
+        {
+            <img src="@Model.Movie.PosterUrl" alt="@Model.Movie.Title" loading="lazy">
+        }
+        else
+        {
+            <div class="no-poster">🎬</div>
+        }
+        <span class="confidence-badge @confidenceClass">@confidenceText</span>
+    </div>
+    <div class="rec-card-body">
+        <h4 class="rec-card-title">@Model.Movie.Title</h4>
+        <div class="rec-card-meta">
+            @if (Model.Movie.ReleaseYear.HasValue)
+            {
+                <span class="meta-badge year">@Model.Movie.ReleaseYear</span>
+            }
+            @if (Model.Movie.ImdbRating.HasValue)
+            {
+                <span class="meta-badge rating">⭐ @Model.Movie.ImdbRating.Value.ToString("0.0")</span>
+            }
+        </div>
+        @if (Model.Movie.MovieGenres != null && Model.Movie.MovieGenres.Any())
+        {
+            <div class="rec-card-genres">
+                @string.Join(", ", Model.Movie.MovieGenres.Select(mg => mg.Genre?.Name).Where(n => n != null).Take(3))
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.Reason))
+        {
+            <div class="rec-card-reason">
+                💡 @Model.Reason
+            </div>
+        }
+        <div class="rec-card-actions">
+            <a asp-controller="Movies" asp-action="Details" asp-route-id="@Model.Movie.Id" class="btn">
+                Подробнее
+            </a>
+            <form asp-controller="Recommendations" asp-action="Hide" asp-route-movieId="@Model.Movie.Id" method="post" style="display:contents;">
+                <button type="submit" class="btn btn-hide" title="Скрыть">✕</button>
+            </form>
+        </div>
+    </div>
+</div>

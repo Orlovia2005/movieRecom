@@ -1,0 +1,454 @@
+@model movieRecom.Models.ViewModel.MovieDetailsViewModel
+@{
+    ViewData["Title"] = Model.Movie.Title;
+}
+
+<div class="movie-details-container">
+    <div class="movie-header">
+        <div class="movie-poster-large">
+            @if (!string.IsNullOrEmpty(Model.Movie.PosterUrl))
+            {
+                <img src="@Model.Movie.PosterUrl" alt="@Model.Movie.Title">
+            }
+            else
+            {
+                <div class="no-poster-large">🎬</div>
+            }
+        </div>
+        
+        <div class="movie-main-info">
+            <h1 class="movie-title-large">@Model.Movie.Title</h1>
+            
+            <div class="movie-meta-info">
+                @if (Model.Movie.ReleaseYear.HasValue)
+                {
+                    <span class="meta-item">📅 @Model.Movie.ReleaseYear</span>
+                }
+                @if (Model.Movie.Runtime.HasValue)
+                {
+                    <span class="meta-item">⏱️ @Model.Movie.Runtime мин</span>
+                }
+                @if (Model.Movie.ImdbRating.HasValue)
+                {
+                    <span class="meta-item imdb">⭐ IMDB: @Model.Movie.ImdbRating.Value.ToString("0.0")</span>
+                }
+            </div>
+            
+            <div class="movie-genres-large">
+                @foreach (var mg in Model.Movie.MovieGenres)
+                {
+                    <span class="genre-tag-large">@mg.Genre.Name</span>
+                }
+            </div>
+            
+            @if (!string.IsNullOrEmpty(Model.Movie.Description))
+            {
+                <p class="movie-description">@Model.Movie.Description</p>
+            }
+            
+            <!-- Рейтинг пользователей -->
+            <div class="user-rating-section">
+                <h3>Рейтинг пользователей</h3>
+                <div class="rating-display">
+                    <div class="rating-stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            var starClass = i <= Math.Round(Model.AverageRating) ? "star filled" : "star";
+                            <span class="@starClass">★</span>
+                        }
+                    </div>
+                    <span class="rating-value">@Model.AverageRating.ToString("0.0")</span>
+                    <span class="rating-count">(@Model.RatingsCount оценок)</span>
+                </div>
+            </div>
+            
+            <!-- Действия пользователя -->
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="user-actions">
+                    <!-- Оценить фильм -->
+                    <div class="rate-movie">
+                        <span>Ваша оценка:</span>
+                        <form method="post" asp-action="Rate" class="rating-form">
+                            <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                var selected = Model.UserRating.HasValue && i <= Model.UserRating ? "selected" : "";
+                                <button type="submit" name="score" value="@i" class="rate-star @selected">★</button>
+                            }
+                        </form>
+                    </div>
+                    
+                    <!-- Wishlist -->
+                    <div class="wishlist-action">
+                        @if (Model.IsInWishlist)
+                        {
+                            <form method="post" asp-controller="Wishlist" asp-action="Remove">
+                                <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                                <button type="submit" class="wishlist-btn in-wishlist">
+                                    ❤️ В списке желаний
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-controller="Wishlist" asp-action="Add">
+                                <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                                <button type="submit" class="wishlist-btn">
+                                    🤍 Добавить в список желаний
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="login-prompt">
+                    <a href="@Url.Action("Login", "Account")">Войдите</a>, чтобы оценить фильм и добавить в список желаний
+                </div>
+            }
+        </div>
+    </div>
+    
+    <!-- Комментарии -->
+    <div class="comments-section">
+        <h2>💬 Отзывы</h2>
+        
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form method="post" asp-action="AddComment" class="comment-form">
+                <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                <textarea name="text" placeholder="Напишите ваш отзыв..." required></textarea>
+                <button type="submit" class="submit-comment-btn">Отправить отзыв</button>
+            </form>
+        }
+        
+        @if (Model.Comments.Any())
+        {
+            <div class="comments-list">
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <img src="@(comment.User.AvatarUrl ?? "/Images/BaseAvatar.jpg")" class="comment-avatar" />
+                            <div class="comment-author">
+                                <strong>@comment.User.Name @comment.User.LastName</strong>
+                                <span class="comment-date">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                        </div>
+                        <p class="comment-text">@comment.Text</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="no-comments">Пока нет отзывов. Будьте первым!</p>
+        }
+    </div>
+    
+    <a href="@Url.Action("Index")" class="back-link">← Вернуться в каталог</a>
+</div>
+
+<style>
+    .movie-details-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .movie-header {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .movie-poster-large {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    
+    .movie-poster-large img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    .no-poster-large {
+        aspect-ratio: 2/3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3a 100%);
+        font-size: 6rem;
+    }
+    
+    .movie-title-large {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .movie-meta-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .meta-item {
+        background: rgba(255,255,255,0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    
+    .meta-item.imdb {
+        background: rgba(245, 197, 24, 0.2);
+        color: #f5c518;
+    }
+    
+    .movie-genres-large {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .genre-tag-large {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    
+    .movie-description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #ccc;
+        margin-bottom: 2rem;
+    }
+    
+    .user-rating-section {
+        background: rgba(255,255,255,0.05);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .rating-display {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .rating-stars .star {
+        font-size: 1.5rem;
+        color: #333;
+    }
+    
+    .rating-stars .star.filled {
+        color: #f5c518;
+    }
+    
+    .rating-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-left: 0.5rem;
+    }
+    
+    .rating-count {
+        color: #888;
+    }
+    
+    .user-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        align-items: center;
+    }
+    
+    .rate-movie {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .rating-form {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 0.25rem;
+    }
+    
+    .rate-star {
+        background: transparent;
+        border: none;
+        font-size: 2rem;
+        color: #444;
+        cursor: pointer;
+        transition: all 0.2s;
+        padding: 0;
+    }
+    
+    /* Selected state - highlight this and all following stars (which appear before visually due to reverse) */
+    .rate-star.selected,
+    .rate-star.selected ~ .rate-star {
+        color: #f5c518;
+    }
+    
+    /* Hover state - highlight hovered and all following stars */
+    .rate-star:hover,
+    .rate-star:hover ~ .rate-star {
+        color: #f5c518;
+        transform: scale(1.2);
+    }
+    
+    .wishlist-btn {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid #667eea;
+        border-radius: 25px;
+        background: transparent;
+        color: #667eea;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .wishlist-btn:hover {
+        background: #667eea;
+        color: #fff;
+    }
+    
+    .wishlist-btn.in-wishlist {
+        background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
+        border-color: transparent;
+        color: #fff;
+    }
+    
+    .login-prompt {
+        background: rgba(102, 126, 234, 0.1);
+        padding: 1rem;
+        border-radius: 8px;
+        color: #888;
+    }
+    
+    .login-prompt a {
+        color: #667eea;
+    }
+    
+    .comments-section {
+        background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+    }
+    
+    .comments-section h2 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .comment-form textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 1rem;
+        border: 2px solid #3a3a5c;
+        border-radius: 12px;
+        background: #0f0f23;
+        color: #fff;
+        font-size: 1rem;
+        resize: vertical;
+        margin-bottom: 1rem;
+    }
+    
+    .comment-form textarea:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .submit-comment-btn {
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 25px;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    
+    .submit-comment-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .comments-list {
+        margin-top: 2rem;
+    }
+    
+    .comment-item {
+        background: rgba(255,255,255,0.05);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    
+    .comment-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .comment-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    
+    .comment-date {
+        display: block;
+        font-size: 0.85rem;
+        color: #888;
+    }
+    
+    .comment-text {
+        line-height: 1.6;
+        color: #ddd;
+    }
+    
+    .no-comments {
+        color: #888;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .back-link {
+        display: inline-block;
+        color: #667eea;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: transform 0.3s;
+    }
+    
+    .back-link:hover {
+        transform: translateX(-5px);
+    }
+    
+    @@media (max-width: 768px) {
+        .movie-header {
+            grid-template-columns: 1fr;
+        }
+        
+        .movie-poster-large {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+    }
+</style>

@@ -1,0 +1,408 @@
+@using movieRecom.Models.ViewModel
+@model RecommendationsViewModel
+@{
+    ViewData["Title"] = "Рекомендации для вас";
+    
+    // Divide recommendations into 3 sections based on score
+    // >= 80% = "Уверены, вам понравится"
+    // >= 60% = "Вам может понравиться"  
+    // < 60% = "Попробуйте посмотреть"
+    var highConfidence = Model.Recommendations.Where(r => r.Score >= 80).ToList();
+    var mediumConfidence = Model.Recommendations.Where(r => r.Score >= 60 && r.Score < 80).ToList();
+    var lowConfidence = Model.Recommendations.Where(r => r.Score < 60).ToList();
+}
+
+<div class="recommendations-page">
+    <h1 class="page-title">🎬 Рекомендации для вас</h1>
+    <p class="page-subtitle">Подобраны на основе ваших оценок и предпочтений</p>
+
+    @if (Model.Recommendations.Any())
+    {
+        <!-- Section 1: High Confidence (>= 80%) -->
+        @if (highConfidence.Any())
+        {
+            <section class="recommendation-section">
+                <div class="section-header">
+                    <span class="section-badge high">🔥 Топ</span>
+                    <h2>Уверены, вам понравится</h2>
+                </div>
+                <div class="carousel-container">
+                    <button class="carousel-btn prev" onclick="scrollCarousel(this, -1)">‹</button>
+                    <div class="carousel-track">
+                        @foreach (var rec in highConfidence)
+                        {
+                            @await Html.PartialAsync("_RecommendationCard", rec)
+                        }
+                    </div>
+                    <button class="carousel-btn next" onclick="scrollCarousel(this, 1)">›</button>
+                </div>
+            </section>
+        }
+
+        <!-- Section 2: Medium Confidence (60-79%) -->
+        @if (mediumConfidence.Any())
+        {
+            <section class="recommendation-section">
+                <div class="section-header">
+                    <span class="section-badge medium">👍 Хорошие</span>
+                    <h2>Вам может понравиться</h2>
+                </div>
+                <div class="carousel-container">
+                    <button class="carousel-btn prev" onclick="scrollCarousel(this, -1)">‹</button>
+                    <div class="carousel-track">
+                        @foreach (var rec in mediumConfidence)
+                        {
+                            @await Html.PartialAsync("_RecommendationCard", rec)
+                        }
+                    </div>
+                    <button class="carousel-btn next" onclick="scrollCarousel(this, 1)">›</button>
+                </div>
+            </section>
+        }
+
+        <!-- Section 3: Low Confidence (< 60%) -->
+        @if (lowConfidence.Any())
+        {
+            <section class="recommendation-section">
+                <div class="section-header">
+                    <span class="section-badge low">🎲 Попробуйте</span>
+                    <h2>Попробуйте посмотреть</h2>
+                </div>
+                <div class="carousel-container">
+                    <button class="carousel-btn prev" onclick="scrollCarousel(this, -1)">‹</button>
+                    <div class="carousel-track">
+                        @foreach (var rec in lowConfidence)
+                        {
+                            @await Html.PartialAsync("_RecommendationCard", rec)
+                        }
+                    </div>
+                    <button class="carousel-btn next" onclick="scrollCarousel(this, 1)">›</button>
+                </div>
+            </section>
+        }
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🎬</div>
+            <h3>Пока нет рекомендаций</h3>
+            <p>Оцените несколько фильмов, чтобы мы могли подобрать рекомендации для вас</p>
+            <a asp-controller="Movies" asp-action="Index" class="btn btn-accent">
+                Начать оценивать
+            </a>
+        </div>
+    }
+</div>
+
+@section Styles {
+<style>
+    .recommendations-page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .page-subtitle {
+        color: var(--text-secondary, #9ca3af);
+        margin-bottom: 2rem;
+    }
+    
+    .recommendation-section {
+        margin-bottom: 3rem;
+    }
+    
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.5rem;
+        margin: 0;
+        color: var(--text-primary, #f0f0f5);
+    }
+    
+    .section-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .section-badge.high {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+    
+    .section-badge.medium {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .section-badge.low {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+    }
+    
+    /* Carousel */
+    .carousel-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    
+    .carousel-track {
+        display: flex;
+        gap: 1.5rem;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding: 1rem 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .carousel-track::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .carousel-btn {
+        position: absolute;
+        z-index: 10;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--bg-secondary, #1a1a2e);
+        border: 2px solid var(--accent, #667eea);
+        color: var(--accent, #667eea);
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .carousel-btn:hover {
+        background: var(--accent, #667eea);
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    .carousel-btn.prev { left: -24px; }
+    .carousel-btn.next { right: -24px; }
+    
+    /* Recommendation Card */
+    .rec-card {
+        flex: 0 0 280px;
+        background: var(--bg-secondary, #1a1a2e);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--border-color, #2d2d4a);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .rec-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.25);
+    }
+    
+    .rec-card-poster {
+        position: relative;
+        height: 380px;
+        overflow: hidden;
+    }
+    
+    .rec-card-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+    
+    .rec-card:hover .rec-card-poster img {
+        transform: scale(1.05);
+    }
+    
+    .rec-card-poster .no-poster {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3a 100%);
+        font-size: 4rem;
+    }
+    
+    .confidence-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .confidence-badge.high {
+        background: rgba(16, 185, 129, 0.9);
+        color: white;
+    }
+    
+    .confidence-badge.medium {
+        background: rgba(102, 126, 234, 0.9);
+        color: white;
+    }
+    
+    .confidence-badge.low {
+        background: rgba(245, 158, 11, 0.9);
+        color: white;
+    }
+    
+    .rec-card-body {
+        padding: 1.25rem;
+    }
+    
+    .rec-card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary, #f0f0f5);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .rec-card-meta {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        flex-wrap: wrap;
+    }
+    
+    .meta-badge {
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .meta-badge.year {
+        background: var(--bg-card, #1f1f35);
+        color: var(--text-secondary, #9ca3af);
+    }
+    
+    .meta-badge.rating {
+        background: rgba(245, 197, 24, 0.2);
+        color: #f5c518;
+    }
+    
+    .rec-card-genres {
+        font-size: 0.8rem;
+        color: var(--text-muted, #6b7280);
+        margin-bottom: 1rem;
+    }
+    
+    .rec-card-reason {
+        background: rgba(102, 126, 234, 0.1);
+        border-left: 3px solid var(--accent, #667eea);
+        padding: 0.75rem;
+        border-radius: 0 8px 8px 0;
+        font-size: 0.85rem;
+        color: var(--text-secondary, #9ca3af);
+        margin-bottom: 1rem;
+    }
+    
+    .rec-card-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .rec-card-actions .btn {
+        flex: 1;
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+    
+    .rec-card-actions .btn-hide {
+        flex: 0;
+        padding: 0.6rem 0.8rem;
+        background: transparent;
+        border: 1px solid var(--border-color, #2d2d4a);
+        color: var(--text-muted, #6b7280);
+    }
+    
+    .rec-card-actions .btn-hide:hover {
+        background: var(--danger, #ef4444);
+        border-color: var(--danger, #ef4444);
+        color: white;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    
+    .empty-icon {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state h3 {
+        color: var(--text-primary, #f0f0f5);
+        margin-bottom: 0.5rem;
+    }
+    
+    .empty-state p {
+        color: var(--text-muted, #6b7280);
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .recommendations-page {
+            padding: 1rem;
+        }
+        
+        .carousel-btn {
+            display: none;
+        }
+        
+        .rec-card {
+            flex: 0 0 260px;
+        }
+        
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+    }
+</style>
+}
+
+@section Scripts {
+<script>
+    function scrollCarousel(btn, direction) {
+        const container = btn.parentElement.querySelector('.carousel-track');
+        const cardWidth = 296; // card width + gap
+        container.scrollBy({ left: direction * cardWidth * 2, behavior: 'smooth' });
+    }
+</script>
+}

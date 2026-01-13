@@ -1,0 +1,600 @@
+@model movieRecom.Models.ViewModel.MovieCatalogViewModel
+@{
+    ViewData["Title"] = "Каталог фильмов";
+}
+
+<div class="movies-container">
+    <h1 class="page-title">🎬 Каталог фильмов</h1>
+    
+    <!-- Фильтры -->
+    <div class="filters-section">
+        <form method="get" class="filters-form" id="filterForm">
+            <div class="filter-row">
+                <div class="filter-group search-group">
+                    <input type="text" name="search" value="@Model.SearchQuery" 
+                           placeholder="Поиск по названию..." class="search-input" id="movieSearch" autocomplete="off">
+                    <div id="searchResults" class="search-autocomplete"></div>
+                </div>
+                <button type="submit" class="filter-btn">Найти</button>
+                <a href="@Url.Action("Index")" class="reset-btn">Сбросить</a>
+            </div>
+            
+            <!-- Жанры (множественный выбор) -->
+            <div class="filter-group genres-filter">
+                <label class="filter-label">Жанры:</label>
+                <div class="genre-chips">
+                    @foreach (var genre in Model.Genres)
+                    {
+                        var isSelected = Model.SelectedGenreIds.Contains(genre.Id);
+                        <label class="genre-chip @(isSelected ? "selected" : "")">
+                            <input type="checkbox" name="genreIds" value="@genre.Id" @(isSelected ? "checked" : "") onchange="this.form.submit()">
+                            @genre.Name
+                        </label>
+                    }
+                </div>
+            </div>
+            
+            <!-- Год выпуска (один слайдер) -->
+            <div class="filter-group year-filter">
+                <label class="filter-label">Год от: <span id="yearDisplay">@(Model.YearFrom ?? Model.MinYear)</span></label>
+                <div class="year-slider-wrapper">
+                    <input type="range" id="yearSlider" name="yearFrom" 
+                           min="@Model.MinYear" max="@Model.MaxYear" 
+                           value="@(Model.YearFrom ?? Model.MinYear)" 
+                           oninput="document.getElementById('yearDisplay').textContent = this.value">
+                    <button type="submit" class="apply-year-btn">Применить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Сетка фильмов -->
+    @if (Model.Movies.Any())
+    {
+        <div class="movies-grid">
+            @foreach (var movie in Model.Movies)
+            {
+                <div class="movie-card" onclick="location.href='@Url.Action("Details", new { id = movie.Id })'">
+                    <div class="movie-poster">
+                        @if (!string.IsNullOrEmpty(movie.PosterUrl))
+                        {
+                            <img src="@movie.PosterUrl" alt="@movie.Title">
+                        }
+                        else
+                        {
+                            <div class="no-poster">🎬</div>
+                        }
+                        @if (movie.ImdbRating.HasValue)
+                        {
+                            <div class="imdb-badge">⭐ @movie.ImdbRating.Value.ToString("0.0")</div>
+                        }
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title">@movie.Title</h3>
+                        <div class="movie-meta">
+                            @if (movie.ReleaseYear.HasValue)
+                            {
+                                <span class="movie-year">@movie.ReleaseYear</span>
+                            }
+                            @if (movie.Runtime.HasValue)
+                            {
+                                <span class="movie-runtime">@movie.Runtime мин</span>
+                            }
+                        </div>
+                        <div class="movie-genres">
+                            @foreach (var mg in movie.MovieGenres.Take(3))
+                            {
+                                <span class="genre-tag">@mg.Genre.Name</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- Пагинация (ограниченная) -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="pagination">
+                @{
+                    // Build query parameters for pagination
+                    var baseParams = new Dictionary<string, object?>();
+                    if (!string.IsNullOrEmpty(Model.SearchQuery)) baseParams["search"] = Model.SearchQuery;
+                    foreach (var gid in Model.SelectedGenreIds) baseParams[$"genreIds"] = Model.SelectedGenreIds;
+                    if (Model.YearFrom.HasValue) baseParams["yearFrom"] = Model.YearFrom;
+                    if (Model.YearTo.HasValue) baseParams["yearTo"] = Model.YearTo;
+                    
+                    int current = Model.CurrentPage;
+                    int total = Model.TotalPages;
+                    int showPages = 5; // Number of page links to show
+                    int start = Math.Max(1, current - showPages / 2);
+                    int end = Math.Min(total, start + showPages - 1);
+                    if (end == total) start = Math.Max(1, end - showPages + 1);
+                }
+                
+                @if (current > 1)
+                {
+                    <a href="@Url.Action("Index", new { page = 1, search = Model.SearchQuery, genreIds = Model.SelectedGenreIds, yearFrom = Model.YearFrom, yearTo = Model.YearTo })" 
+                       class="page-link">«</a>
+                    <a href="@Url.Action("Index", new { page = current - 1, search = Model.SearchQuery, genreIds = Model.SelectedGenreIds, yearFrom = Model.YearFrom, yearTo = Model.YearTo })" 
+                       class="page-link">‹</a>
+                }
+                
+                @if (start > 1)
+                {
+                    <span class="page-ellipsis">...</span>
+                }
+                
+                @for (int i = start; i <= end; i++)
+                {
+                    var isActive = i == current ? "active" : "";
+                    <a href="@Url.Action("Index", new { page = i, search = Model.SearchQuery, genreIds = Model.SelectedGenreIds, yearFrom = Model.YearFrom, yearTo = Model.YearTo })" 
+                       class="page-link @isActive">@i</a>
+                }
+                
+                @if (end < total)
+                {
+                    <span class="page-ellipsis">...</span>
+                }
+                
+                @if (current < total)
+                {
+                    <a href="@Url.Action("Index", new { page = current + 1, search = Model.SearchQuery, genreIds = Model.SelectedGenreIds, yearFrom = Model.YearFrom, yearTo = Model.YearTo })" 
+                       class="page-link">›</a>
+                    <a href="@Url.Action("Index", new { page = total, search = Model.SearchQuery, genreIds = Model.SelectedGenreIds, yearFrom = Model.YearFrom, yearTo = Model.YearTo })" 
+                       class="page-link">»</a>
+                }
+                
+                <span class="page-info">Страница @current из @total</span>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="no-movies">
+            <div class="no-movies-icon">🎬</div>
+            <h2>Фильмы не найдены</h2>
+            <p>Попробуйте изменить параметры поиска</p>
+        </div>
+    }
+</div>
+
+<style>
+    .movies-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .filters-section {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 1.5rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    
+    .filters-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .filter-group {
+        position: relative;
+    }
+    
+    .filter-group.search-group {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .filter-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #ccc;
+        font-weight: 500;
+    }
+    
+    /* Genre chips */
+    .genres-filter {
+        width: 100%;
+    }
+    
+    .genre-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .genre-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.8rem;
+        background: rgba(102, 126, 234, 0.1);
+        border: 1px solid #3a3a5c;
+        border-radius: 20px;
+        color: #aaa;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .genre-chip:hover {
+        border-color: #667eea;
+        color: #fff;
+    }
+    
+    .genre-chip.selected {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: transparent;
+        color: #fff;
+    }
+    
+    .genre-chip input[type="checkbox"] {
+        display: none;
+    }
+    
+    /* Year range slider */
+    .year-filter {
+        width: 100%;
+    }
+    
+    .year-slider-wrapper {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .year-slider-wrapper input[type="range"] {
+        flex: 1;
+        -webkit-appearance: none;
+        height: 6px;
+        background: #3a3a5c;
+        border-radius: 3px;
+        outline: none;
+    }
+    
+    .year-slider-wrapper input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+    }
+    
+    .apply-year-btn {
+        padding: 0.5rem 1rem;
+        background: rgba(102, 126, 234, 0.2);
+        border: 1px solid #667eea;
+        border-radius: 8px;
+        color: #667eea;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .apply-year-btn:hover {
+        background: #667eea;
+        color: #fff;
+    }
+    
+    .search-input, .filter-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #3a3a5c;
+        border-radius: 8px;
+        background: #0f0f23;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus, .filter-select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .filter-btn {
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .reset-btn {
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        border: 2px solid #667eea;
+        border-radius: 8px;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .reset-btn:hover {
+        background: #667eea;
+        color: #fff;
+    }
+    
+    .movies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .movie-card {
+        background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+        border-radius: 16px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .movie-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+    }
+    
+    .movie-poster {
+        position: relative;
+        aspect-ratio: 2/3;
+        overflow: hidden;
+    }
+    
+    .movie-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+    
+    .movie-card:hover .movie-poster img {
+        transform: scale(1.1);
+    }
+    
+    .no-poster {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3a 100%);
+        font-size: 4rem;
+    }
+    
+    .imdb-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.8);
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-weight: bold;
+        color: #f5c518;
+    }
+    
+    .movie-info {
+        padding: 1rem;
+    }
+    
+    .movie-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #fff;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .movie-meta {
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.85rem;
+        color: #888;
+        margin-bottom: 0.5rem;
+    }
+    
+    .movie-genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+    
+    .genre-tag {
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .page-link {
+        padding: 0.5rem 1rem;
+        background: #1a1a2e;
+        border-radius: 8px;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 2.5rem;
+        text-align: center;
+    }
+    
+    .page-link:hover, .page-link.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .page-ellipsis {
+        color: #666;
+        padding: 0 0.5rem;
+    }
+    
+    .page-info {
+        color: #888;
+        font-size: 0.85rem;
+        margin-left: 1rem;
+    }
+    
+    .no-movies {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #888;
+    }
+    
+    .no-movies-icon {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .search-autocomplete {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #1a1a2e;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        z-index: 100;
+        display: none;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .search-autocomplete.show {
+        display: block;
+    }
+    
+    .search-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .search-item:hover {
+        background: rgba(102, 126, 234, 0.2);
+    }
+    
+    .search-item-poster {
+        width: 40px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 0.75rem;
+    }
+    
+    .search-item-title {
+        flex: 1;
+    }
+</style>
+
+@section Scripts {
+<script>
+    const searchInput = document.getElementById('movieSearch');
+    const searchResults = document.getElementById('searchResults');
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const term = this.value;
+        
+        if (term.length < 2) {
+            searchResults.classList.remove('show');
+            return;
+        }
+        
+        searchTimeout = setTimeout(() => {
+            fetch(`/Movies/Search?term=${encodeURIComponent(term)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        searchResults.innerHTML = data.map(movie => `
+                            <div class="search-item" onclick="location.href='/Movies/Details/${movie.id}'">
+                                ${movie.posterUrl ? `<img src="${movie.posterUrl}" class="search-item-poster">` : ''}
+                                <div class="search-item-title">
+                                    <strong>${movie.title}</strong>
+                                    ${movie.releaseYear ? `<br><small>${movie.releaseYear}</small>` : ''}
+                                </div>
+                            </div>
+                        `).join('');
+                        searchResults.classList.add('show');
+                    } else {
+                        searchResults.classList.remove('show');
+                    }
+                });
+        }, 300);
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.classList.remove('show');
+        }
+    });
+    
+    // Year range slider function
+    function updateYearRange() {
+        const fromSlider = document.getElementById('yearFromSlider');
+        const toSlider = document.getElementById('yearToSlider');
+        const display = document.getElementById('yearRangeDisplay');
+        
+        let fromVal = parseInt(fromSlider.value);
+        let toVal = parseInt(toSlider.value);
+        
+        // Ensure from <= to
+        if (fromVal > toVal) {
+            if (this === fromSlider) {
+                toSlider.value = fromVal;
+                toVal = fromVal;
+            } else {
+                fromSlider.value = toVal;
+                fromVal = toVal;
+            }
+        }
+        
+        display.textContent = fromVal + ' - ' + toVal;
+    }
+</script>
+}

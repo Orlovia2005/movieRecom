@@ -361,3 +361,19 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# AI Assistant files
+.claude/
+CLAUDE.md
+.gemini/
+.cursor/
+.agent/
+*.anthropic
+.aider*
+.continue/
+
+# Large data files
+ml_service/data/*.tsv
+ml_service/data/*.csv
+ml_service/models/
+*.pkl
+*.gz

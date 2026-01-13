@@ -1,0 +1,211 @@
+@using movieRecom.Controllers
+@model HistoryViewModel
+@{
+    ViewData["Title"] = "История активности";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-clock-history text-primary"></i> История активности
+    </h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center bg-primary text-white">
+                <div class="card-body">
+                    <h3>@Model.Ratings.Count</h3>
+                    <p class="mb-0">Оценок</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h3>@Model.WishlistItems.Count</h3>
+                    <p class="mb-0">В избранном</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-info text-white">
+                <div class="card-body">
+                    <h3>@Model.Comments.Count</h3>
+                    <p class="mb-0">Комментариев</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs" id="historyTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="ratings-tab" data-bs-toggle="tab" data-bs-target="#ratings" type="button">
+                <i class="bi bi-star"></i> Оценки (@Model.Ratings.Count)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="wishlist-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button">
+                <i class="bi bi-heart"></i> Избранное (@Model.WishlistItems.Count)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments" type="button">
+                <i class="bi bi-chat"></i> Комментарии (@Model.Comments.Count)
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content pt-3" id="historyTabsContent">
+        <!-- Оценки -->
+        <div class="tab-pane fade show active" id="ratings" role="tabpanel">
+            @if (Model.Ratings.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Фильм</th>
+                                <th>Жанры</th>
+                                <th>Оценка</th>
+                                <th>Дата</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var rating in Model.Ratings)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if (!string.IsNullOrEmpty(rating.Movie.PosterUrl))
+                                            {
+                                                <img src="@rating.Movie.PosterUrl" alt="" class="me-2 rounded" style="width: 40px; height: 60px; object-fit: cover;">
+                                            }
+                                            <span>@rating.Movie.Title</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            @string.Join(", ", rating.Movie.MovieGenres.Select(mg => mg.Genre.Name).Take(2))
+                                        </small>
+                                    </td>
+                                    <td>
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="bi @(i <= rating.Score ? "bi-star-fill text-warning" : "bi-star text-muted")"></i>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>@rating.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Movies" asp-action="Details" asp-route-id="@rating.MovieId" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-star" style="font-size: 3rem;"></i>
+                    <p class="mt-2">Вы ещё не оценивали фильмы</p>
+                </div>
+            }
+        </div>
+
+        <!-- Избранное -->
+        <div class="tab-pane fade" id="wishlist" role="tabpanel">
+            @if (Model.WishlistItems.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Фильм</th>
+                                <th>Жанры</th>
+                                <th>Добавлено</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.WishlistItems)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if (!string.IsNullOrEmpty(item.Movie.PosterUrl))
+                                            {
+                                                <img src="@item.Movie.PosterUrl" alt="" class="me-2 rounded" style="width: 40px; height: 60px; object-fit: cover;">
+                                            }
+                                            <span>@item.Movie.Title</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            @string.Join(", ", item.Movie.MovieGenres.Select(mg => mg.Genre.Name).Take(2))
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <small>@item.AddedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Movies" asp-action="Details" asp-route-id="@item.MovieId" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-heart" style="font-size: 3rem;"></i>
+                    <p class="mt-2">Ваш список избранного пуст</p>
+                </div>
+            }
+        </div>
+
+        <!-- Комментарии -->
+        <div class="tab-pane fade" id="comments" role="tabpanel">
+            @if (Model.Comments.Any())
+            {
+                <div class="list-group">
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <a asp-controller="Movies" asp-action="Details" asp-route-id="@comment.MovieId">
+                                            @comment.Movie.Title
+                                        </a>
+                                        @if (!comment.IsApproved)
+                                        {
+                                            <span class="badge bg-warning text-dark ms-2">На модерации</span>
+                                        }
+                                    </h6>
+                                    <p class="mb-1">@comment.Text</p>
+                                    <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-chat" style="font-size: 3rem;"></i>
+                    <p class="mt-2">Вы ещё не оставляли комментариев</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

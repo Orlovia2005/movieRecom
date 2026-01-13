@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: movierecom-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Ignat2005
+      POSTGRES_DB: movieRecom
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - movierecom-network
+
+  # C# ASP.NET MVC Web Application
+  web:
+    build:
+      context: ./plt
+      dockerfile: Dockerfile
+    container_name: movierecom-web
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=movieRecom;Username=postgres;Password=Ignat2005;
+      - ML_SERVICE_URL=http://ml:5001
+    ports:
+      - "5050:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - movierecom-network
+
+  # Python ML Recommendation Service
+  ml:
+    build:
+      context: ./ml_service
+      dockerfile: Dockerfile
+    container_name: movierecom-ml
+    environment:
+      - DATABASE_URL=postgresql://postgres:Ignat2005@db:5432/movieRecom
+      - MODEL_PATH=/app/models/recommender.pkl
+      - FLASK_ENV=production
+    ports:
+      - "5001:5001"
+    volumes:
+      - ml_models:/app/models
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - movierecom-network
+
+volumes:
+  postgres_data:
+  ml_models:
+
+networks:
+  movierecom-network:
+    driver: bridge

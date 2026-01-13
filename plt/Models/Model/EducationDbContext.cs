@@ -26,9 +26,16 @@ namespace movieRecom.Models.Model
             _configuration = configuration;
         }
 
-        // Ваши модели
+        // DbSets
         public virtual DbSet<User> Users { get; set; }
-        
+        public virtual DbSet<Movie> Movies { get; set; }
+        public virtual DbSet<Genre> Genres { get; set; }
+        public virtual DbSet<MovieGenre> MovieGenres { get; set; }
+        public virtual DbSet<Rating> Ratings { get; set; }
+        public virtual DbSet<Wishlist> Wishlists { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+        public virtual DbSet<HiddenRecommendation> HiddenRecommendations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -41,11 +48,11 @@ namespace movieRecom.Models.Model
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
-            // Конфигурация User
+            // User configuration
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("users_pkey");
+                entity.ToTable("users");
 
                 entity.HasIndex(e => e.Email)
                     .IsUnique()
@@ -55,6 +62,10 @@ namespace movieRecom.Models.Model
                     .IsRequired()
                     .HasMaxLength(100)
                     .HasColumnName("name");
+
+                entity.Property(e => e.LastName)
+                    .HasMaxLength(100)
+                    .HasColumnName("last_name");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -66,15 +77,229 @@ namespace movieRecom.Models.Model
                     .HasMaxLength(255)
                     .HasColumnName("password");
 
-                
+                entity.Property(e => e.AvatarUrl)
+                    .HasMaxLength(500)
+                    .HasColumnName("avatar_url");
+
+                entity.Property(e => e.Role)
+                    .HasColumnName("role")
+                    .HasDefaultValue(UserRole.User);
             });
 
-            
+            // Genre configuration
+            modelBuilder.Entity<Genre>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("genres");
+
+                entity.HasIndex(e => e.Name)
+                    .IsUnique()
+                    .HasDatabaseName("ix_genres_name");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnName("name");
+            });
+
+            // Movie configuration
+            modelBuilder.Entity<Movie>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("movies");
+
+                entity.HasIndex(e => e.ImdbId)
+                    .IsUnique()
+                    .HasDatabaseName("ix_movies_imdb_id");
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnName("title");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.ReleaseYear)
+                    .HasColumnName("release_year");
+
+                entity.Property(e => e.PosterUrl)
+                    .HasMaxLength(1000)
+                    .HasColumnName("poster_url");
+
+                entity.Property(e => e.ImdbId)
+                    .HasMaxLength(20)
+                    .HasColumnName("imdb_id");
+
+                entity.Property(e => e.ImdbRating)
+                    .HasColumnName("imdb_rating");
+
+                entity.Property(e => e.Runtime)
+                    .HasColumnName("runtime");
+            });
+
+            // MovieGenre (Many-to-Many join table)
+            modelBuilder.Entity<MovieGenre>(entity =>
+            {
+                entity.HasKey(mg => new { mg.MovieId, mg.GenreId });
+                entity.ToTable("movie_genres");
+
+                entity.HasOne(mg => mg.Movie)
+                    .WithMany(m => m.MovieGenres)
+                    .HasForeignKey(mg => mg.MovieId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(mg => mg.Genre)
+                    .WithMany(g => g.MovieGenres)
+                    .HasForeignKey(mg => mg.GenreId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Rating configuration
+            modelBuilder.Entity<Rating>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("ratings");
+
+                entity.HasIndex(e => new { e.UserId, e.MovieId })
+                    .IsUnique()
+                    .HasDatabaseName("ix_ratings_user_movie");
+
+                entity.Property(e => e.Score)
+                    .IsRequired()
+                    .HasColumnName("score");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne(e => e.User)
+                    .WithMany(u => u.Ratings)
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Movie)
+                    .WithMany(m => m.Ratings)
+                    .HasForeignKey(e => e.MovieId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Wishlist configuration
+            modelBuilder.Entity<Wishlist>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("wishlists");
+
+                entity.HasIndex(e => new { e.UserId, e.MovieId })
+                    .IsUnique()
+                    .HasDatabaseName("ix_wishlists_user_movie");
+
+                entity.Property(e => e.AddedAt)
+                    .HasColumnName("added_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne(e => e.User)
+                    .WithMany(u => u.WishlistItems)
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Movie)
+                    .WithMany(m => m.WishlistItems)
+                    .HasForeignKey(e => e.MovieId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Comment configuration
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("comments");
+
+                entity.Property(e => e.Text)
+                    .IsRequired()
+                    .HasColumnName("text");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.IsApproved)
+                    .HasColumnName("is_approved")
+                    .HasDefaultValue(false);
+
+                entity.HasOne(e => e.User)
+                    .WithMany(u => u.Comments)
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Movie)
+                    .WithMany(m => m.Comments)
+                    .HasForeignKey(e => e.MovieId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // RefreshToken configuration
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("refresh_tokens");
+
+                entity.HasIndex(e => e.Token)
+                    .IsUnique()
+                    .HasDatabaseName("ix_refresh_tokens_token");
+
+                entity.Property(e => e.Token)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnName("token");
+
+                entity.Property(e => e.ExpiresAt)
+                    .HasColumnName("expires_at");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.IsRevoked)
+                    .HasColumnName("is_revoked")
+                    .HasDefaultValue(false);
+
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // HiddenRecommendation configuration
+            modelBuilder.Entity<HiddenRecommendation>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("hidden_recommendations");
+
+                entity.HasIndex(e => new { e.UserId, e.MovieId })
+                    .IsUnique()
+                    .HasDatabaseName("ix_hidden_recommendations_user_movie");
+
+                entity.Property(e => e.HiddenAt)
+                    .HasColumnName("hidden_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Movie)
+                    .WithMany()
+                    .HasForeignKey(e => e.MovieId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

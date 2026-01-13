@@ -1,0 +1,98 @@
+@using movieRecom.Controllers
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Панель администратора";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-speedometer2"></i> Панель администратора
+    </h1>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h2>@Model.TotalUsers</h2>
+                    <p class="mb-0">Пользователей</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h2>@Model.TotalMovies</h2>
+                    <p class="mb-0">Фильмов</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h2>@Model.TotalRatings</h2>
+                    <p class="mb-0">Оценок</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning">
+                <div class="card-body text-center">
+                    <h2>@Model.PendingComments</h2>
+                    <p class="mb-0">Ожидают модерации</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a asp-action="Movies" class="btn btn-outline-primary btn-lg w-100">
+                <i class="bi bi-film"></i> Управление фильмами
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-action="Comments" class="btn btn-outline-warning btn-lg w-100">
+                <i class="bi bi-chat-left-text"></i> Модерация комментариев
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-action="Users" class="btn btn-outline-info btn-lg w-100">
+                <i class="bi bi-people"></i> Пользователи
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Последние оценки</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Пользователь</th>
+                        <th>Фильм</th>
+                        <th>Оценка</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rating in Model.RecentRatings)
+                    {
+                        <tr>
+                            <td>@rating.User.Name @rating.User.LastName</td>
+                            <td>@rating.Movie.Title</td>
+                            <td>
+                                @for (int i = 0; i < rating.Score; i++)
+                                {
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                }
+                            </td>
+                            <td>@rating.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
