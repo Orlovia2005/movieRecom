@@ -274,6 +274,32 @@ namespace movieRecom.Controllers
             return RedirectToAction("Details", new { id = movieId });
         }
 
+        // POST: Movies/RemoveRating
+        [HttpPost]
+        public async Task<IActionResult> RemoveRating(int movieId)
+        {
+            var user = await GetCurrentUserAsync();
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var rating = await _context.Ratings
+                .FirstOrDefaultAsync(r => r.MovieId == movieId && r.UserId == user.Id);
+
+            if (rating == null)
+            {
+                Notif_Error("Оценка не найдена");
+                return RedirectToAction("Liked");
+            }
+
+            _context.Ratings.Remove(rating);
+            await _context.SaveChangesAsync();
+
+            Notif_Success("Оценка удалена");
+            return RedirectToAction("Liked");
+        }
+
         // POST: Movies/AddComment
         [HttpPost]
         public async Task<IActionResult> AddComment(int movieId, string text)
