@@ -23,21 +23,15 @@ Verify that the recommendation engine delivers genuinely personalized suggestion
 
 ### Active
 
-- [ ] **Verify SVD training process** — Ensure collaborative filtering correctly learns from user rating patterns
-- [ ] **Validate personalization accuracy** — Confirm recommendations change based on user's ratings and wishlist
-- [ ] **Test content-based similarity** — Verify TF-IDF correctly identifies similar movies by genre/description
-- [ ] **Audit hybrid recommendation logic** — Check how SVD and content-based methods combine
-- [ ] **Verify wishlist integration** — Confirm wishlist preferences influence recommendations
-- [ ] **Test edge cases** — Cold start (new users), sparse data, no ratings scenarios
-- [ ] **Performance analysis** — Model training time, prediction latency, cache effectiveness
-- [ ] **Fallback mechanism validation** — Ensure local algorithm works when ML service fails
+- [ ] **"Liked Movies" page** — New page showing all movies user has rated, with ability to remove ratings
+- [ ] **Profile page redesign** — Improve UI/UX of /Account/Profile with better layout and styling
+- [ ] **Wishlist integration** — Already done ✓ (implicit feedback rating 4.5)
 
 ### Out of Scope
 
-- Adding new ML algorithms (deep learning, neural collaborative filtering) — Focus is verification, not enhancement
-- UI/UX improvements — Pure backend ML validation
+- Adding new ML algorithms (deep learning, neural collaborative filtering) — Future enhancement
 - Production deployment — Dev/test environment only
-- Real user testing — Synthetic test scenarios
+- Real user testing — Synthetic test scenarios for now
 
 ## Context
 
