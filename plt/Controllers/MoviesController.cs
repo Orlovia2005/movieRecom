@@ -110,6 +110,93 @@ namespace movieRecom.Controllers
             return View(viewModel);
         }
 
+        // GET: Movies/Liked
+        public async Task<IActionResult> Liked(
+            string? search,
+            [FromQuery(Name = "genreIds")] int[]? genreIds,
+            int? yearFrom,
+            int? yearTo,
+            int page = 1)
+        {
+            var user = await GetCurrentUserAsync();
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            const int pageSize = 12;
+
+            // Query user's ratings with full movie data
+            var query = _context.Ratings
+                .Where(r => r.UserId == user.Id)
+                .Include(r => r.Movie)
+                .ThenInclude(m => m.MovieGenres)
+                .ThenInclude(mg => mg.Genre)
+                .Select(r => new { r.Movie, r.Score })
+                .AsQueryable();
+
+            // Search by title
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(r => r.Movie.Title.ToLower().Contains(search.ToLower()));
+            }
+
+            // Filter by genres
+            var selectedGenreIds = genreIds?.ToList() ?? new List<int>();
+            if (selectedGenreIds.Any())
+            {
+                query = query.Where(r => r.Movie.MovieGenres.Any(mg => selectedGenreIds.Contains(mg.GenreId)));
+            }
+
+            // Filter by year range
+            if (yearFrom.HasValue)
+            {
+                query = query.Where(r => r.Movie.ReleaseYear >= yearFrom.Value);
+            }
+            if (yearTo.HasValue)
+            {
+                query = query.Where(r => r.Movie.ReleaseYear <= yearTo.Value);
+            }
+
+            var totalItems = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var ratedMovies = await query
+                .OrderByDescending(r => r.Score)
+                .ThenByDescending(r => r.Movie.ImdbRating)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => (r.Movie, r.Score))
+                .ToListAsync();
+
+            var genres = await _context.Genres.OrderBy(g => g.Name).ToListAsync();
+
+            // Get min/max years from user's rated movies
+            var userMovieYears = await _context.Ratings
+                .Where(r => r.UserId == user.Id && r.Movie.ReleaseYear.HasValue)
+                .Select(r => r.Movie.ReleaseYear!.Value)
+                .ToListAsync();
+
+            var minYear = userMovieYears.Any() ? userMovieYears.Min() : 1990;
+            var maxYear = userMovieYears.Any() ? userMovieYears.Max() : DateTime.Now.Year;
+
+            var viewModel = new LikedMoviesViewModel
+            {
+                RatedMovies = ratedMovies,
+                Genres = genres,
+                SelectedGenreIds = selectedGenreIds,
+                YearFrom = yearFrom,
+                YearTo = yearTo,
+                MinYear = minYear,
+                MaxYear = maxYear,
+                SearchQuery = search,
+                CurrentPage = page,
+                TotalPages = totalPages
+            };
+
+            return View(viewModel);
+        }
+
         // GET: Movies/Details/5
         public async Task<IActionResult> Details(int id)
         {
