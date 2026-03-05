@@ -32,42 +32,81 @@ class RecommenderModel:
         self.is_trained: bool = False
         self.user_rated_movies: Dict[int, set] = defaultdict(set)
         
-    def train(self, ratings_df: pd.DataFrame, movies_df: pd.DataFrame) -> Dict[str, Any]:
+    def train(self, ratings_df: pd.DataFrame, movies_df: pd.DataFrame, wishlists_df: Optional[pd.DataFrame] = None) -> Dict[str, Any]:
         """
         Train the recommendation model
-        
+
         Args:
             ratings_df: DataFrame with columns [user_id, movie_id, rating]
             movies_df: DataFrame with movie details including genres, description
-            
+            wishlists_df: Optional DataFrame with wishlist data [user_id, movie_id]
+
         Returns:
             Training metrics
         """
         print("[INFO] Training recommendation model...")
-        
+
         # Store movies data
         self.movies_df = movies_df.copy()
         self._build_movie_mappings()
-        
+
+        # Prepare training data (combine ratings + wishlist as implicit feedback)
+        combined_ratings = self._prepare_training_data(ratings_df, wishlists_df)
+
         # Build user rated movies cache
-        self._build_user_ratings_cache(ratings_df)
-        
+        self._build_user_ratings_cache(combined_ratings)
+
         # Train collaborative filtering model
-        cf_metrics = self._train_collaborative_filtering(ratings_df)
-        
+        cf_metrics = self._train_collaborative_filtering(combined_ratings)
+
         # Build content-based similarity matrix
         self._build_content_similarity()
-        
+
         self.is_trained = True
         print("[INFO] Model training complete!")
-        
+
         return {
             'collaborative_filtering': cf_metrics,
             'content_based': {
                 'movies_processed': len(self.movies_df),
                 'similarity_matrix_shape': self.content_similarity.shape if self.content_similarity is not None else None
+            },
+            'wishlist_integration': {
+                'enabled': wishlists_df is not None and not wishlists_df.empty,
+                'wishlist_entries': len(wishlists_df) if wishlists_df is not None else 0
             }
         }
+
+    def _prepare_training_data(self, ratings_df: pd.DataFrame, wishlists_df: Optional[pd.DataFrame]) -> pd.DataFrame:
+        """
+        Combine explicit ratings with implicit feedback from wishlists
+
+        Wishlist movies are treated as implicit positive feedback (rating=4.5)
+        This helps the model learn user preferences even before they rate movies
+        """
+        if wishlists_df is None or wishlists_df.empty:
+            print("[INFO] No wishlist data provided, using only explicit ratings")
+            return ratings_df.copy()
+
+        # Create implicit ratings from wishlist
+        implicit_ratings = wishlists_df[['user_id', 'movie_id']].copy()
+        implicit_ratings['rating'] = 4.5  # High implicit rating for wishlist items
+
+        # Remove wishlist movies that user already rated (explicit rating takes priority)
+        rated_pairs = set(zip(ratings_df['user_id'], ratings_df['movie_id']))
+        implicit_mask = ~implicit_ratings.apply(
+            lambda row: (row['user_id'], row['movie_id']) in rated_pairs,
+            axis=1
+        )
+        implicit_ratings = implicit_ratings[implicit_mask]
+
+        # Combine explicit and implicit ratings
+        combined_df = pd.concat([ratings_df[['user_id', 'movie_id', 'rating']], implicit_ratings], ignore_index=True)
+
+        print(f"[INFO] Combined {len(ratings_df)} explicit ratings + {len(implicit_ratings)} wishlist implicit ratings")
+        print(f"[INFO] Total training samples: {len(combined_df)}")
+
+        return combined_df
     
     def _build_movie_mappings(self):
         """Build mapping between movie IDs and matrix indices"""

@@ -118,7 +118,7 @@ def get_user_rated_movies(conn, user_id: int) -> set:
         FROM ratings
         WHERE "UserId" = %s
     """
-    
+
     try:
         with conn.cursor() as cur:
             cur.execute(query, (user_id,))
@@ -126,3 +126,27 @@ def get_user_rated_movies(conn, user_id: int) -> set:
     except Exception as e:
         print(f"[ERROR] Failed to fetch rated movies: {e}")
         return set()
+
+
+def get_all_wishlists(conn) -> pd.DataFrame:
+    """
+    Fetch all wishlists from the database
+    Used for implicit feedback (wishlist = implicit positive rating)
+    Returns DataFrame with columns: user_id, movie_id, added_at
+    """
+    query = """
+        SELECT
+            w."UserId" as user_id,
+            w."MovieId" as movie_id,
+            w.added_at
+        FROM wishlists w
+        ORDER BY w.added_at
+    """
+
+    try:
+        df = pd.read_sql_query(query, conn)
+        print(f"[INFO] Loaded {len(df)} wishlist entries for implicit feedback")
+        return df
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch wishlists: {e}")
+        return pd.DataFrame()

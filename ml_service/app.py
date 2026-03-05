@@ -16,7 +16,7 @@ CORS(app)
 
 # Import after app creation to avoid circular imports
 from recommender import RecommenderModel
-from database import get_db_connection, get_user_ratings, get_all_movies
+from database import get_db_connection, get_user_ratings, get_all_movies, get_all_wishlists
 
 # Initialize the recommender model
 recommender = RecommenderModel()
@@ -101,32 +101,33 @@ def get_similar_movies(movie_id: int):
 def train_model():
     """
     Train or retrain the recommendation model
-    Uses ratings from the database
+    Uses ratings and wishlists from the database
     """
     try:
         # Load data from database
         conn = get_db_connection()
         ratings_df = get_user_ratings(conn)
         movies_df = get_all_movies(conn)
+        wishlists_df = get_all_wishlists(conn)
         conn.close()
-        
+
         if ratings_df.empty:
             return jsonify({
                 'error': 'No ratings data found',
                 'message': 'Please ensure there are ratings in the database'
             }), 400
-        
-        # Train the model
-        metrics = recommender.train(ratings_df, movies_df)
-        
+
+        # Train the model with wishlist integration
+        metrics = recommender.train(ratings_df, movies_df, wishlists_df)
+
         # Save the model
         model_path = os.getenv('MODEL_PATH', './models/recommender.pkl')
         os.makedirs(os.path.dirname(model_path), exist_ok=True)
         recommender.save(model_path)
-        
+
         return jsonify({
             'status': 'success',
-            'message': 'Model trained successfully',
+            'message': 'Model trained successfully with wishlist integration',
             'metrics': metrics,
             'saved_to': model_path
         })
