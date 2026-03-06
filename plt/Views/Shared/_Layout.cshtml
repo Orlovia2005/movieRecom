@@ -46,6 +46,10 @@
             <nav class="nav-menu">
                 <a asp-controller="Home" asp-action="Index">Главная</a>
                 <a asp-controller="Movies" asp-action="Index">Каталог</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Movies" asp-action="Liked" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Liked" ? "active" : "")">💜 Понравившиеся</a>
+                }
                 <a asp-controller="Recommendations" asp-action="Index">Рекомендации</a>
                 <a asp-controller="Selection" asp-action="Selection">Подобрать фильм</a>
             </nav>
