@@ -377,3 +377,21 @@ ml_service/data/*.csv
 ml_service/models/
 *.pkl
 *.gz
+
+# Python virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Docker logs
+docker-compose.override.yml
+*.log.txt
