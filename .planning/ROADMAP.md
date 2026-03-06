@@ -22,8 +22,8 @@ None (ASP.NET MVC, Razor, Bootstrap already in stack)
 **Plans**: 2 plans
 
 Plans:
-- [x] 01-01: Backend - Controller action and view model for liked movies (PLANNED)
-- [x] 01-02: Frontend - Razor view with cards, filters, and remove rating functionality (PLANNED)
+- [x] 01-01: Backend - Controller action and view model for liked movies (COMPLETE)
+- [ ] 01-02: Frontend - Razor view with cards, filters, and remove rating functionality
 
 ### Phase 2: Profile Page Redesign
 **Goal**: Improve /Account/Profile page UI with better layout, styling, and user experience
@@ -39,5 +39,5 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Liked Movies Page | 0/2 | Planned | - |
+| 1. Liked Movies Page | 1/2 | In progress | - |
 | 2. Profile Page Redesign | 0/2 | Not started | - |
