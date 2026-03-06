@@ -161,13 +161,16 @@ namespace movieRecom.Controllers
             var totalItems = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            var ratedMovies = await query
+            var ratedMoviesData = await query
                 .OrderByDescending(r => r.Score)
                 .ThenByDescending(r => r.Movie.ImdbRating)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(r => (r.Movie, r.Score))
                 .ToListAsync();
+
+            var ratedMovies = ratedMoviesData
+                .Select(r => (r.Movie, r.Score))
+                .ToList();
 
             var genres = await _context.Genres.OrderBy(g => g.Name).ToListAsync();
 

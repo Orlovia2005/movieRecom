@@ -89,7 +89,7 @@ namespace movieRecom.Controllers
                 model.SecondName = user.LastName;
                 model.AvatarUrl = user.AvatarUrl;
                 model.Id = user.Id;
-                model.MemberSince = user.CreatedAt;
+                model.MemberSince = null; // User model doesn't have CreatedAt field
 
                 // Статистика оценок
                 var ratings = await _context.Ratings
