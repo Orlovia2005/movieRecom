@@ -1,156 +1,587 @@
-﻿@model movieRecom.Models.ViewModel.ProfileViewModel
+@model movieRecom.Models.ViewModel.ProfileViewModel
 @{
     ViewData["Title"] = "Профиль";
 }
 
-<div class="profile-container">
-    <!-- Левое меню -->
-    <aside class="profile-sidebar">
-        <ul>
-            <li class="active" data-tab="general">
-                <i class="fas fa-user-circle"></i> Общие данные
-            </li>
-            <li data-tab="password">
-                <i class="fas fa-key"></i> Смена пароля
-            </li>
-            <form asp-action="Logout" asp-controller="Account" enctype="multipart/form-data" class="logout-form">
-                <button type="submit" class="btn btn_logaut">
-                    <i class="fas fa-sign-out-alt"></i> Выйти
-                </button>
-            </form>
-        </ul>
-    </aside>
-
-    <!-- Контент -->
-    <section class="profile-content">
-        <!-- Общие данные -->
-        <div class="tab-content active" id="general">
-            <div class="profile-header">
-                <h2><i class="fas fa-user-edit"></i> Общие данные</h2>
-                <p class="profile-subtitle">Обновите информацию о вашем аккаунте</p>
+<div class="profile-page">
+    <div class="profile-container">
+        <!-- Левая колонка - Информация и статистика -->
+        <aside class="profile-sidebar">
+            <!-- Аватар и основная информация -->
+            <div class="profile-card">
+                <div class="avatar-section">
+                    @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                    {
+                        <img src="@Model.AvatarUrl" alt="Аватар" class="avatar-large" id="avatarPreview" />
+                    }
+                    else
+                    {
+                        <img src="~/Images/BaseAvatar.jpg" alt="Аватар" class="avatar-large" id="avatarPreview" />
+                    }
+                </div>
+                <div class="profile-info">
+                    <h2 class="profile-name">@Model.FirstName @Model.SecondName</h2>
+                    <p class="profile-email">@Model.Email</p>
+                    @if (Model.MemberSince.HasValue)
+                    {
+                        <p class="member-since">Участник с @Model.MemberSince.Value.ToString("MMMM yyyy")</p>
+                    }
+                </div>
             </div>
 
-            <form asp-action="UpdateProfile" asp-controller="Account" method="post" enctype="multipart/form-data" class="profile-form">
-                <!-- скрытый ID -->
-                <input type="hidden" asp-for="Id" />
+            <!-- Статистика -->
+            <div class="stats-card">
+                <h3 class="stats-title">Статистика</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.TotalRatings</div>
+                        <div class="stat-label">Оценок</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.AverageRating.ToString("F1")</div>
+                        <div class="stat-label">Средняя оценка</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">@Model.WishlistCount</div>
+                        <div class="stat-label">В избранном</div>
+                    </div>
+                </div>
+            </div>
 
-                <!-- Аватар -->
-                <div class="form-group avatar-group">
-                    <div class="avatar-wrapper">
-                        @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+            <!-- Недавняя активность -->
+            @if (Model.RecentRatings?.Any() == true)
+            {
+                <div class="activity-card">
+                    <h3 class="activity-title">Недавняя активность</h3>
+                    <div class="activity-list">
+                        @foreach (var item in Model.RecentRatings)
                         {
-                            <img src="@Model.AvatarUrl" alt="Аватар" class="avatar-previewProfile" id="avatarPreview" />
+                            <div class="activity-item">
+                                <div class="activity-movie">
+                                    <div class="activity-title-small">@item.Movie.Title</div>
+                                    <div class="activity-date">@item.RatedAt.ToString("dd.MM.yyyy")</div>
+                                </div>
+                                <div class="activity-rating">
+                                    <div class="rating-badge">⭐ @item.Score</div>
+                                </div>
+                            </div>
                         }
-                        else
-                        {
-                            <img src="~/Images/BaseAvatar.jpg" alt="Аватар" class="avatar-previewProfile" id="avatarPreview" />
-                        }
-                        <div class="avatar-overlay">
-                            <i class="fas fa-camera"></i>
-                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Навигационное меню -->
+            <div class="profile-nav">
+                <button class="nav-tab active" data-tab="general">
+                    <i class="fas fa-user-circle"></i> Общие данные
+                </button>
+                <button class="nav-tab" data-tab="password">
+                    <i class="fas fa-key"></i> Смена пароля
+                </button>
+                <form asp-action="Logout" asp-controller="Account" class="logout-form">
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Правая колонка - Формы редактирования -->
+        <main class="profile-main">
+            <!-- Общие данные -->
+            <div class="tab-content active" id="general">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-user-edit"></i> Общие данные</h2>
+                        <p class="card-subtitle">Обновите информацию о вашем аккаунте</p>
                     </div>
 
-                    <!-- input для выбора файла -->
-                    <div class="avatar-controls">
-                        <input type="file" id="avatarInput" name="avatar" accept="image/*" hidden />
-                        <button type="button" class="btn btn-avatar" id="chooseAvatarBtn">
-                            <i class="fas fa-cloud-upload-alt"></i> Выбрать файл
+                    <form asp-action="UpdateProfile" asp-controller="Account" method="post" enctype="multipart/form-data" class="profile-form">
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Загрузка аватара -->
+                        <div class="form-section">
+                            <label class="section-label">Аватар</label>
+                            <div class="avatar-upload">
+                                <input type="file" id="avatarInput" name="avatar" accept="image/*" hidden />
+                                <button type="button" class="btn-upload" id="chooseAvatarBtn">
+                                    <i class="fas fa-cloud-upload-alt"></i> Выбрать файл
+                                </button>
+                                <span id="fileName" class="file-name-display">Файл не выбран</span>
+                            </div>
+                        </div>
+
+                        <!-- Основные поля -->
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label asp-for="FirstName">Имя</label>
+                                <input type="text" asp-for="FirstName" class="input-field" placeholder="Введите ваше имя" />
+                            </div>
+
+                            <div class="form-field">
+                                <label asp-for="SecondName">Фамилия</label>
+                                <input type="text" asp-for="SecondName" class="input-field" placeholder="Введите вашу фамилию" />
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label asp-for="Email">Email</label>
+                            <input type="email" asp-for="Email" class="input-field" placeholder="Введите ваш email" />
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Сохранить изменения
                         </button>
-                        <span id="fileName" class="file-name">Файл не выбран</span>
-                    </div>
+                    </form>
                 </div>
-
-                <div class="form-grid">
-                    <!-- Имя -->
-                    <div class="form-group">
-                        <label asp-for="FirstName">
-                            <i class="fas fa-user-tag"></i> Имя
-                        </label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" class="form-control" asp-for="FirstName" placeholder="Введите ваше имя" />
-                        </div>
-                    </div>
-
-                    <!-- Фамилия -->
-                    <div class="form-group">
-                        <label asp-for="SecondName">
-                            <i class="fas fa-users"></i> Фамилия
-                        </label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" class="form-control" asp-for="SecondName" placeholder="Введите вашу фамилию" />
-                        </div>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="form-group">
-                        <label asp-for="Email">
-                            <i class="fas fa-envelope"></i> Email
-                        </label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-at input-icon"></i>
-                            <input type="email" class="form-control" asp-for="Email" placeholder="Введите ваш email" />
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-accent btn-save">
-                    <i class="fas fa-save"></i> Сохранить изменения
-                </button>
-            </form>
-        </div>
-
-        <!-- Пароль -->
-        <div class="tab-content" id="password">
-            <div class="profile-header">
-                <h2><i class="fas fa-lock"></i> Смена пароля</h2>
-                <p class="profile-subtitle">Обновите пароль для защиты вашего аккаунта</p>
             </div>
 
-            <form asp-action="UpdatePassword" asp-controller="Account" method="post" class="profile-form">
-                <input type="hidden" asp-for="Id" />
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label asp-for="OldPassword">
-                            <i class="fas fa-key"></i> Старый пароль
-                        </label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" class="form-control" asp-for="OldPassword" placeholder="Введите текущий пароль" />
-                        </div>
+            <!-- Смена пароля -->
+            <div class="tab-content" id="password">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-lock"></i> Смена пароля</h2>
+                        <p class="card-subtitle">Обновите пароль для защиты вашего аккаунта</p>
                     </div>
 
-                    <div class="form-group">
-                        <label asp-for="NewPassword">
-                            <i class="fas fa-key"></i> Новый пароль
-                        </label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" class="form-control" asp-for="NewPassword" placeholder="Введите новый пароль" />
-                        </div>
-                    </div>
+                    <form asp-action="UpdatePassword" asp-controller="Account" method="post" class="profile-form">
+                        <input type="hidden" asp-for="Id" />
 
-                    <div class="form-group">
-                        <label asp-for="ConfirmNewPassword">
-                            <i class="fas fa-redo"></i> Повторите пароль
-                        </label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" class="form-control" asp-for="ConfirmNewPassword" placeholder="Повторите новый пароль" />
+                        <div class="form-field">
+                            <label asp-for="OldPassword">Старый пароль</label>
+                            <input type="password" asp-for="OldPassword" class="input-field" placeholder="Введите текущий пароль" />
                         </div>
-                    </div>
+
+                        <div class="form-field">
+                            <label asp-for="NewPassword">Новый пароль</label>
+                            <input type="password" asp-for="NewPassword" class="input-field" placeholder="Введите новый пароль" />
+                        </div>
+
+                        <div class="form-field">
+                            <label asp-for="ConfirmNewPassword">Повторите пароль</label>
+                            <input type="password" asp-for="ConfirmNewPassword" class="input-field" placeholder="Повторите новый пароль" />
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-sync-alt"></i> Обновить пароль
+                        </button>
+                    </form>
                 </div>
-
-                <button type="submit" class="btn btn-accent btn-save">
-                    <i class="fas fa-sync-alt"></i> Обновить пароль
-                </button>
-            </form>
-        </div>
-    </section>
+            </div>
+        </main>
+    </div>
 </div>
 
+<style>
+    .profile-page {
+        min-height: calc(100vh - 100px);
+        background: #0f0f1a;
+        padding: 2rem 0;
+    }
+
+    .profile-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 2rem;
+    }
+
+    /* Sidebar */
+    .profile-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .profile-card, .stats-card, .activity-card, .profile-nav {
+        background: #1a1a2e;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .avatar-section {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .avatar-large {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #2d2d4a;
+    }
+
+    .profile-info {
+        text-align: center;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #f0f0f5;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .profile-email {
+        color: #9ca3af;
+        font-size: 0.95rem;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .member-since {
+        color: #6b7280;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Stats */
+    .stats-title, .activity-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #f0f0f5;
+        margin: 0 0 1rem 0;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: #0f0f23;
+        border-radius: 8px;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #60a5fa;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: #9ca3af;
+    }
+
+    /* Activity */
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .activity-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: #0f0f23;
+        border-radius: 8px;
+    }
+
+    .activity-movie {
+        flex: 1;
+    }
+
+    .activity-title-small {
+        font-size: 0.9rem;
+        color: #f0f0f5;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-date {
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+
+    .rating-badge {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #fbbf24;
+    }
+
+    /* Navigation */
+    .profile-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .nav-tab {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        color: #9ca3af;
+        text-align: left;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .nav-tab:hover {
+        background: #0f0f23;
+        color: #f0f0f5;
+    }
+
+    .nav-tab.active {
+        background: #60a5fa;
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .nav-tab i {
+        margin-right: 0.75rem;
+    }
+
+    .logout-form {
+        margin-top: 0.5rem;
+    }
+
+    .btn-logout {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        background: transparent;
+        border: 1px solid #ef4444;
+        border-radius: 8px;
+        color: #ef4444;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-logout:hover {
+        background: #ef4444;
+        color: #fff;
+    }
+
+    .btn-logout i {
+        margin-right: 0.75rem;
+    }
+
+    /* Main content */
+    .profile-main {
+        min-height: 600px;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .content-card {
+        background: #1a1a2e;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+        margin-bottom: 2rem;
+    }
+
+    .card-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #f0f0f5;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .card-header h2 i {
+        margin-right: 0.5rem;
+        color: #60a5fa;
+    }
+
+    .card-subtitle {
+        color: #9ca3af;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* Form */
+    .profile-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-section {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #2d2d4a;
+    }
+
+    .section-label {
+        display: block;
+        font-weight: 500;
+        color: #f0f0f5;
+        margin-bottom: 1rem;
+    }
+
+    .avatar-upload {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-upload {
+        padding: 0.7rem 1.5rem;
+        background: #60a5fa;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .btn-upload:hover {
+        background: #3b82f6;
+    }
+
+    .btn-upload i {
+        margin-right: 0.5rem;
+    }
+
+    .file-name-display {
+        color: #9ca3af;
+        font-size: 0.9rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-field label {
+        color: #f0f0f5;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .input-field {
+        padding: 0.9rem 1rem;
+        background: #0f0f23;
+        border: 1px solid #2d2d4a;
+        border-radius: 8px;
+        color: #f0f0f5;
+        font-size: 0.95rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .input-field:focus {
+        outline: none;
+        border-color: #60a5fa;
+    }
+
+    .input-field::placeholder {
+        color: #6b7280;
+    }
+
+    .btn-primary {
+        padding: 1rem 2rem;
+        background: #60a5fa;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        align-self: flex-start;
+    }
+
+    .btn-primary:hover {
+        background: #3b82f6;
+    }
+
+    .btn-primary i {
+        margin-right: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .profile-container {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
 @section Scripts {
-    <script src="~/js/Profile.js"></script>
+    <script>
+        // Tab switching
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+
+                // Remove active from all tabs and content
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                // Add active to clicked tab and corresponding content
+                this.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+        // Avatar upload
+        const avatarInput = document.getElementById('avatarInput');
+        const chooseBtn = document.getElementById('chooseAvatarBtn');
+        const fileName = document.getElementById('fileName');
+        const avatarPreview = document.getElementById('avatarPreview');
+
+        if (chooseBtn) {
+            chooseBtn.addEventListener('click', () => avatarInput.click());
+        }
+
+        if (avatarInput) {
+            avatarInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    fileName.textContent = this.files[0].name;
+
+                    // Preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarPreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+    </script>
 }

@@ -89,6 +89,31 @@ namespace movieRecom.Controllers
                 model.SecondName = user.LastName;
                 model.AvatarUrl = user.AvatarUrl;
                 model.Id = user.Id;
+                model.MemberSince = user.CreatedAt;
+
+                // Статистика оценок
+                var ratings = await _context.Ratings
+                    .Where(r => r.UserId == user.Id)
+                    .ToListAsync();
+
+                model.TotalRatings = ratings.Count;
+                model.AverageRating = ratings.Any() ? ratings.Average(r => r.Score) : 0;
+
+                // Wishlist count
+                model.WishlistCount = await _context.Wishlists
+                    .Where(w => w.UserId == user.Id)
+                    .CountAsync();
+
+                // Недавние оценки (последние 5)
+                model.RecentRatings = await _context.Ratings
+                    .Where(r => r.UserId == user.Id)
+                    .OrderByDescending(r => r.CreatedAt)
+                    .Take(5)
+                    .Include(r => r.Movie)
+                    .ThenInclude(m => m.MovieGenres)
+                    .ThenInclude(mg => mg.Genre)
+                    .Select(r => new ValueTuple<Movie, int, DateTime>(r.Movie, r.Score, r.CreatedAt))
+                    .ToListAsync();
             }
             return View(model);
         }

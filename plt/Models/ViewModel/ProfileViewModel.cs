@@ -54,5 +54,12 @@ namespace movieRecom.Models.ViewModel
             set=> SetProperty(ref _confirmNewpassword, value);
         }
 
+        // Статистика
+        public int TotalRatings { get; set; }
+        public double AverageRating { get; set; }
+        public int WishlistCount { get; set; }
+        public DateTime? MemberSince { get; set; }
+        public List<(movieRecom.Models.Model.Movie Movie, int Score, DateTime RatedAt)>? RecentRatings { get; set; }
+
     }
 }
