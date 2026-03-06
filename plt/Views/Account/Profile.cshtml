@@ -145,8 +145,6 @@
                     </div>
 
                     <form asp-action="UpdatePassword" asp-controller="Account" method="post" class="profile-form">
-                        <input type="hidden" asp-for="Id" />
-
                         <div class="form-field">
                             <label asp-for="OldPassword">Старый пароль</label>
                             <input type="password" asp-for="OldPassword" class="input-field" placeholder="Введите текущий пароль" />

@@ -33,6 +33,8 @@ services:
       - ML_SERVICE_URL=http://ml:5001
     ports:
       - "5050:8080"
+    volumes:
+      - web_images:/app/wwwroot/Images
     depends_on:
       db:
         condition: service_healthy
@@ -67,6 +69,7 @@ services:
 volumes:
   postgres_data:
   ml_models:
+  web_images:
 
 networks:
   movierecom-network:
