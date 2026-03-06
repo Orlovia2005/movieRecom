@@ -44,14 +44,23 @@
                 <a href="/">MovieRecom</a>
             </div>
             <nav class="nav-menu">
-                <a asp-controller="Home" asp-action="Index">Главная</a>
-                <a asp-controller="Movies" asp-action="Index">Каталог</a>
+                @{
+                    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+                    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+                }
+                <a asp-controller="Home" asp-action="Index"
+                   class="@(currentController == "Home" && currentAction == "Index" ? "active" : "")">Главная</a>
+                <a asp-controller="Movies" asp-action="Index"
+                   class="@(currentController == "Movies" && currentAction == "Index" ? "active" : "")">Каталог</a>
                 @if (User.Identity?.IsAuthenticated == true)
                 {
-                    <a asp-controller="Movies" asp-action="Liked" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Liked" ? "active" : "")">💜 Понравившиеся</a>
+                    <a asp-controller="Movies" asp-action="Liked"
+                       class="@(currentController == "Movies" && currentAction == "Liked" ? "active" : "")">💜 Понравившиеся</a>
                 }
-                <a asp-controller="Recommendations" asp-action="Index">Рекомендации</a>
-                <a asp-controller="Selection" asp-action="Selection">Подобрать фильм</a>
+                <a asp-controller="Recommendations" asp-action="Index"
+                   class="@(currentController == "Recommendations" ? "active" : "")">Рекомендации</a>
+                <a asp-controller="Selection" asp-action="Selection"
+                   class="@(currentController == "Selection" ? "active" : "")">Подобрать фильм</a>
             </nav>
             <div class="auth-buttons">
                 <div class="auth-buttons">
